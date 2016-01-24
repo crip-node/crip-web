@@ -1,0 +1,55 @@
+{
+  "name": "cripweb",
+  "version": "1.0.0",
+  "description": "nodejs package for web application gulp most used tasks\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crip-node/crip-web.git"
+  },
+  "keywords": [
+    "extend",
+    "gulp-concat",
+    "concat",
+    "minify-css",
+    "sass",
+    "gulp-sass",
+    "sourcemaps",
+    "uglifyjs",
+    "gulp-watch",
+    "watch"
+  ],
+  "author": {
+    "name": "Igors Krasjukovs",
+    "email": "tahq69@gmail.com",
+    "url": "https://github.com/tahq69"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^6.2.3",
+    "colors": "^1.1.2",
+    "cssgrace": "^3.0.0",
+    "cssnano": "^3.4.0",
+    "extend": "^3.0.0",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-foreach": "^0.1.0",
+    "gulp-if": "^2.0.0",
+    "gulp-postcss": "^6.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.1.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.1",
+    "gulp-watch": "^4.3.5",
+    "pixrem": "^3.0.0"
+  },
+  "readme": "# webhelp\r\nnodejs package for web application gulp most used tasks\r\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/crip-node/crip-web/issues"
+  },
+  "homepage": "https://github.com/crip-node/crip-web#readme"
+}
