@@ -28,6 +28,9 @@
     "url": "https://github.com/tahq69"
   },
   "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  },
   "dependencies": {
     "autoprefixer": "^6.2.3",
     "colors": "^1.1.2",
@@ -46,9 +49,6 @@
     "path": "^0.11.14",
     "pixrem": "^3.0.0",
     "require-dir": "^0.3.0"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.0"
   },
   "readme": "# cripweb\r\nFluent API for Gulp\r\n",
   "readmeFilename": "README.md",

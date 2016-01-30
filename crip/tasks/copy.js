@@ -1,10 +1,10 @@
 var gulp = require('gulp'),
-    Crip = require('cripweb');
+    cripweb = require('cripweb')(gulp);
 
-Crip.extend('copy', copy);
+cripweb.extend('copy', copy);
 
 function copy(task, src, dest) {
-    new Crip.Task('copy', task, function(){
+    new cripweb.Task('copy', task, function(){
         return (
             gulp
                 .src(src)
