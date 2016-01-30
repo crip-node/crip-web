@@ -1,5 +1,5 @@
-# crip-help
-nodejs package for web application gulp most used tasks
+# cripweb
+Fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
 
