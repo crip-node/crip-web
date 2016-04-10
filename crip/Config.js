@@ -14,7 +14,7 @@ function Config(defaults) {
     this.copy = {
         base: '',
         watch: true,
-        output: self.output + ''
+        output: path.join(self.output)
     };
 
     this.watch = {
@@ -22,8 +22,9 @@ function Config(defaults) {
     };
 
     this.css = {
-        src: 'css',
-        output: 'css',
+        src: path.join(self.assets, 'css'),
+        output: path.join(self.output, 'css'),
+        minify: true,
         autoprefix: {
             enabled: true,
             options: {
@@ -32,13 +33,16 @@ function Config(defaults) {
             }
         },
         sourcemaps: {
-            sass: true,
-            concat: true,
-            min: true,
+            enabled: true,
+            options: {}
+        },
+        pixrem: {
+            enabled: true,
             options: {}
         },
         sass: {
-            src: 'sass',
+            base: path.join(self.assets, 'sass'),
+            output: path.join(self.output, 'css'),
             // https://github.com/sass/node-sass#options
             options: {
                 outputStyle: 'compressed',
@@ -73,7 +77,7 @@ function Config(defaults) {
         var current = self,
             segments = configPath.split('.');
 
-        Utils.forEach(segments, function(segment){
+        Utils.forEach(segments, function (segment) {
             current = current[segment];
         });
 

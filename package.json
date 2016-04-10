@@ -29,12 +29,19 @@
   },
   "license": "MIT",
   "dependencies": {
-    "autoprefixer": "^6.2",
+    "autoprefixer": "^6.3.6",
+    "cssnano": "^3.5.2",
     "extend": "^3.0",
     "gulp": "^3.9",
     "gulp-batch": "^1.0.5",
+    "gulp-if": "^2.0.0",
+    "gulp-postcss": "^6.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-watch": "^4.3",
-    "path": "^0.11"
+    "path": "^0.11",
+    "pixrem": "^3.0.0"
   },
   "readme": "# cripweb\r\nFluent API for Gulp\r\n",
   "readmeFilename": "README.md",

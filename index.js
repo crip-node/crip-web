@@ -22,6 +22,7 @@ function Crip(gulp, config) {
     // initialise all tasks
     require('./crip/tasks/copy.js')(scope, gulp);
     require('./crip/tasks/watch.js')(scope, gulp);
+    require('./crip/tasks/sass.js')(scope, gulp);
 
     return function (exec) {
         exec(scope.core);
