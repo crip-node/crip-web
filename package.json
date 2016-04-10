@@ -2,7 +2,7 @@
   "name": "cripweb",
   "version": "2.0.0",
   "description": "Fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
-  "main": "index.js",
+  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,27 +28,12 @@
     "url": "https://github.com/tahq69"
   },
   "license": "MIT",
-  "devDependencies": {
-    "gulp": "^3.9.0"
-  },
   "dependencies": {
-    "autoprefixer": "^6.2.3",
-    "colors": "^1.1.2",
-    "cssgrace": "^3.0.0",
-    "cssnano": "^3.4.0",
-    "extend": "^3.0.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-foreach": "^0.1.0",
-    "gulp-if": "^2.0.0",
-    "gulp-postcss": "^6.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.1.1",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-uglify": "^1.5.1",
-    "gulp-watch": "^4.3.5",
-    "path": "^0.11.14",
-    "pixrem": "^3.0.0",
-    "require-dir": "^0.3.0"
+    "gulp": "^3.9",
+    "autoprefixer": "^6.2",
+    "extend": "^3.0",
+    "gulp-watch": "^4.3",
+    "path": "^0.11"
   },
   "readme": "# cripweb\r\nFluent API for Gulp\r\n",
   "readmeFilename": "README.md",

@@ -4,10 +4,15 @@ var Utils = {
     forEach: forEach
 };
 
-Array.prototype.forEach = forEach;
-
 module.exports = Utils;
 
+/**
+ * Get items witch have same search params
+ *
+ * @param {Array} arr
+ * @param {Array} searchParam
+ * @returns {Array}
+ */
 function where(arr, searchParam) {
     var result = [],
         paramsMatch = [];
@@ -25,6 +30,13 @@ function where(arr, searchParam) {
     return result;
 }
 
+/**
+ * Determine array has value
+ *
+ * @param arr
+ * @param val
+ * @returns {boolean}
+ */
 function contains(arr, val) {
     forEach(arr, function (arrVal) {
         if (arrVal === val)
@@ -34,6 +46,12 @@ function contains(arr, val) {
     return false;
 }
 
+/**
+ * Loop in object
+ *
+ * @param {Array|Object} obj
+ * @param {function} callback
+ */
 function forEach(obj, callback) {
     for (var i in obj) {
         if (obj.hasOwnProperty(i))

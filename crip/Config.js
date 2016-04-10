@@ -1,9 +1,8 @@
-var p = require('path');
+var path = require('path');
 
 var config = {
-    tasks: {},
-    assetsPath: './',
-    outputPath: './build',
+    assetsPath: './assets/src',
+    outputPath: './assets/build',
     css: {
         srcPath: 'css',
         destPath: 'css',
@@ -48,28 +47,30 @@ var config = {
 /**
  * Fetch a config item, using a string dot-notation.
  *
- * @param  {string} path
+ * @param  {string} configPath
  * @return {string}
  */
-config.get = function (path) {
+config.get = function (configPath) {
     var basePath;
     var current = config;
 
-    var segments = path.split('.');
+    var segments = configPath.split('.');
 
     // If the path begins with "assets" or "public," then
     // we can assume that the user wants to prefix the
     // given base url to their config path. Useful!
 
-    if (segments[0] == 'assets' || segments[0] == 'output') {
+    /*if (segments[0] == 'assets' || segments[0] == 'output') {
         basePath = config[segments.shift() + 'Path'];
-    }
+    }*/
 
     segments.forEach(function (segment) {
         current = current[segment];
     });
 
-    return p.join(basePath, current);
+    /*return path.join(basePath, current);*/
+
+    return current;
 };
 
 

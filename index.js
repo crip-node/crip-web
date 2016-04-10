@@ -1,59 +1,115 @@
-var gulp = require('gulp'),
-    fs = require('fs'),
+var fs = require('fs'),
     extend = require('extend'),
+    watch = require('gulp-watch'),
     Utils = require('./crip/Utils');
 
-var Crip = function (callback) {
-    require('require-dir')('./crip/tasks');
+function Crip(gulp) {
+    var scope = this;
 
-    callback(Crip.core);
+    this.gulp = gulp;
+    this.Task = require('./crip/Task')(scope);
+    this.Config = require('./crip/Config');
+    this.extend = _extend;
+    this.activeTasks = {};
+    this.tasks = {};
+    this.core = {};
 
-    createGulpTasks.call(Crip);
-};
+    // initialise all tasks
+    require('./crip/tasks/copy.js')(scope, gulp);
 
-Crip.core = {};
-Crip.config = config = require('./crip/Config');
-Crip.Task = require('./crip/Task')(Crip);
-Crip.tasks = config.tasks;
-Crip.extend = _extend;
-Crip.setDefaultFrom = setDefaultFrom;
+    return function (exec) {
+        exec(scope.core);
 
+        // create all user used tasks
+        createGulpTasks.apply(scope);
+
+        // create default task for gulp
+        createGulpDefaultTasks.apply(scope);
+    }
+}
+
+/**
+ * Create gulp tasks for groups
+ */
 var createGulpTasks = function () {
-    var sections = this.tasks;
-    Utils.forEach(sections, function (section) {
-        Utils.forEach(section, createGulpTask);
+    var self = this;
+    Utils.forEach(self.tasks, function (section, sectionName) {
+        // register section task
+        createGulpTask(self, {section: sectionName, id: sectionName, name: false});
+        Utils.forEach(section, function (task) {
+            // regiter task for each section item
+            createGulpTask(self, task);
+        });
     });
 };
 
-function createGulpTask(task) {
-    if (Utils.contains(gulp.tasks, task.id)) return;
+/**
+ * Crate task for each task
+ *
+ * @param {Crip} Crip
+ * @param {gulp} Crip.gulp
+ * @param {Task} Crip.Task
+ *
+ * @param {Task} task
+ * @param {String} task.section
+ * @param {String|Boolean|null} task.name
+ * @param {String} task.id
+ */
+function createGulpTask(Crip, task) {
+    if (Utils.contains(Crip.gulp.tasks, task.id)) return;
 
-    gulp.task(task.id, function () {
-        var gulpTask = Crip.Task.find(task.section, task.name).run();
-
-        // TODO: add section task, to run all inside tasks in one hit
-        //Crip.config.activeTasks[task.id]++;
-
-        return gulpTask;
+    Crip.gulp.task(task.id, function () {
+        var tasksToRun = Crip.Task.find(task.section, task.name);
+        Utils.forEach(tasksToRun, function (taskInstance) {
+            taskInstance.run();
+        });
     });
 }
 
+function createGulpDefaultTasks() {
+    var self = this;
+    this.gulp.task('default', function () {
+        'use strict';
+        self.Task.runAll();
+        self.gulp.start('watch');
+    });
+
+    this.gulp.task('watch', function () {
+        self.Task.watchAll();
+    });
+}
+
+/**
+ * Extend config from file
+ *
+ * @param {String} file Config file location
+ */
 function setDefaultFrom(file) {
     var overrides;
 
     if (fs.existsSync(file)) {
         overrides = JSON.parse(fs.readFileSync(file, 'utf8'));
 
-        extend(true, Crip.config, overrides);
+        extend(true, this.Config, overrides);
     }
 }
 
+/**
+ * Add method for Crip.core
+ *
+ * @param name
+ * @param callback
+ * @private
+ */
 function _extend(name, callback) {
-    Crip.core[name] = function () {
-        callback.apply(this, arguments);
+    var scope = this;
+    scope.core[name] = function () {
+        callback.apply(scope, arguments);
 
-        return this.core;
-    }.bind(this);
+        return scope.core;
+    };
 }
 
-module.exports = Crip;
+module.exports = function (gulp, config) {
+    return new Crip(gulp);
+};
