@@ -1,11 +1,25 @@
-var path = require('path');
+var path = require('path'),
+    Utils = require('./Utils.js');
 
-var config = {
-    assetsPath: './assets/src',
-    outputPath: './assets/build',
-    css: {
-        srcPath: 'css',
-        destPath: 'css',
+function Config(defaults) {
+    var self = this;
+    this.get = get;
+    this.assets = './assets/src';
+    this.output = './assets/build';
+
+    // copy gulp.src options object. Supports:
+    // https://github.com/isaacs/node-glob#options
+    // watch - is watch enabled for coping
+    // output - copy output location
+    this.copy = {
+        base: '',
+        watch: true,
+        output: self.output + ''
+    };
+
+    this.css = {
+        src: 'css',
+        output: 'css',
         autoprefix: {
             enabled: true,
             options: {
@@ -20,18 +34,18 @@ var config = {
             options: {}
         },
         sass: {
-            srcPath: 'sass',
+            src: 'sass',
             // https://github.com/sass/node-sass#options
             options: {
                 outputStyle: 'compressed',
                 precision: 10
             }
         }
-    },
+    };
 
-    js: {
-        srcPath: 'js',
-        destPath: 'js',
+    this.js = {
+        src: 'js',
+        output: 'js',
         uglify: {
             enabled: true,
             options: {}
@@ -41,37 +55,29 @@ var config = {
             min: true,
             options: {}
         }
+    };
+
+    // TODO: apply defaults for object
+
+    /**
+     * Fetch a config item, using a string dot-notation.
+     *
+     * @param  {string} configPath
+     * @return {string}
+     */
+    function get(configPath) {
+        var current = self,
+            segments = configPath.split('.');
+
+        Utils.forEach(segments, function(segment){
+            current = current[segment];
+        });
+
+        return current;
     }
+}
+
+
+module.exports = function (defaults) {
+    return new Config(defaults);
 };
-
-/**
- * Fetch a config item, using a string dot-notation.
- *
- * @param  {string} configPath
- * @return {string}
- */
-config.get = function (configPath) {
-    var basePath;
-    var current = config;
-
-    var segments = configPath.split('.');
-
-    // If the path begins with "assets" or "public," then
-    // we can assume that the user wants to prefix the
-    // given base url to their config path. Useful!
-
-    /*if (segments[0] == 'assets' || segments[0] == 'output') {
-        basePath = config[segments.shift() + 'Path'];
-    }*/
-
-    segments.forEach(function (segment) {
-        current = current[segment];
-    });
-
-    /*return path.join(basePath, current);*/
-
-    return current;
-};
-
-
-module.exports = config;

@@ -1,5 +1,6 @@
 var Utils = require('./Utils'),
-    watch = require('gulp-watch');
+    watch = require('gulp-watch'),
+    batch = require('gulp-batch');
 
 var Crip;
 
@@ -89,6 +90,7 @@ function run() {
  */
 function runAll() {
     _loopAllTasks(function (task) {
+        //task.run();//
         Crip.gulp.start(task.id);
     });
 }
@@ -100,10 +102,13 @@ function watchAll() {
     _loopAllTasks(function (task) {
         'use strict';
         if (task.globs) {
-            watch(task.globs, function () {
-                'use strict';
-                Crip.gulp.start(task.id);
-            });
+            watch(task.globs, batch(function (events, cb) {
+                /*events
+                 .on('data', console.log)
+                 .on('end', cb);*/
+                //task.run();
+                Crip.gulp.start(task.id, cb);
+            }));
         }
     });
 }

@@ -1,8 +1,10 @@
 var Utils = {
-    where: where,
-    contains: contains,
-    forEach: forEach
-};
+        where: where,
+        contains: contains,
+        forEach: forEach,
+        appendBase: appendBase
+    },
+    path = require('path');
 
 module.exports = Utils;
 
@@ -17,8 +19,8 @@ function where(arr, searchParam) {
     var result = [],
         paramsMatch = [];
     forEach(arr, function (arrVal, i) {
-        forEach(searchParam, function(paramVal, j){
-            if(arrVal.hasOwnProperty(j) && paramVal === arrVal[j])
+        forEach(searchParam, function (paramVal, j) {
+            if (arrVal.hasOwnProperty(j) && paramVal === arrVal[j])
                 paramsMatch.push(true);
         });
 
@@ -56,5 +58,18 @@ function forEach(obj, callback) {
     for (var i in obj) {
         if (obj.hasOwnProperty(i))
             callback(obj[i], i);
+    }
+}
+
+function appendBase(options) {
+    if (!options.src || !options.base)
+        return;
+
+    if (typeof options.src === 'object') {
+        Utils.forEach(options.src, function (dir, key) {
+            options.src[key] = path.join(options.base, dir);
+        })
+    } else {
+        options.src = path.join(options.base, options.src);
     }
 }

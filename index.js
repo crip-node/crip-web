@@ -3,16 +3,21 @@ var fs = require('fs'),
     watch = require('gulp-watch'),
     Utils = require('./crip/Utils');
 
-function Crip(gulp) {
-    var scope = this;
+function Crip(gulp, config) {
+    var scope = this,
+        defaults = false;
+
+    if (config && typeof config === 'string')
+        defaults = readConfig(config);
 
     this.gulp = gulp;
     this.Task = require('./crip/Task')(scope);
-    this.Config = require('./crip/Config');
+    this.Config = require('./crip/Config')((defaults || config));
     this.extend = _extend;
     this.activeTasks = {};
     this.tasks = {};
     this.core = {};
+
 
     // initialise all tasks
     require('./crip/tasks/copy.js')(scope, gulp);
@@ -84,13 +89,9 @@ function createGulpDefaultTasks() {
  *
  * @param {String} file Config file location
  */
-function setDefaultFrom(file) {
-    var overrides;
-
+function readConfig(file) {
     if (fs.existsSync(file)) {
-        overrides = JSON.parse(fs.readFileSync(file, 'utf8'));
-
-        extend(true, this.Config, overrides);
+        return JSON.parse(fs.readFileSync(file, 'utf8'));
     }
 }
 
@@ -111,5 +112,5 @@ function _extend(name, callback) {
 }
 
 module.exports = function (gulp, config) {
-    return new Crip(gulp);
+    return new Crip(gulp, config);
 };
