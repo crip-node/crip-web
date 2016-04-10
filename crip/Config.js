@@ -17,6 +17,10 @@ function Config(defaults) {
         output: self.output + ''
     };
 
+    this.watch = {
+        base: ''
+    };
+
     this.css = {
         src: 'css',
         output: 'css',

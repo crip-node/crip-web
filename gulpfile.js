@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     cripweb = require('./index.js')(gulp);
 
 cripweb(function (crip) {
-    crip.copy('file', ['./src/**/*.*'], 'test', 'assets')
-        .copy('other-file', ['assets/**/*.*'], 'test');
+    crip.copy('gulpfile', 'gulpfile.js', false)
+        .watch('gulpfile', 'gulpfile.js', 'copy-gulpfile');
+
 });

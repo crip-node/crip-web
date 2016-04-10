@@ -16,19 +16,23 @@ function Copy(Crip, gulp) {
     function copy(name, src, output, base, watch) {
         var options = extend({src: src}, Crip.Config.get('copy'));
 
-        if (output)
-            options.output = output;
+        // base && watch = undefined, output = watch
+        if (typeof output === 'boolean') {
+            options.watch = output;
+        } else {
+            if (output)
+                options.output = output;
 
-        if (typeof base === 'boolean') {
-            options.watch = base;
-            base = options.base;
+            // watch = undefined, base = watch
+            if (typeof base === 'boolean') {
+                options.watch = base;
+            } else {
+                if (base)
+                    options.base = base;
+                if (typeof watch === 'boolean')
+                    options.watch = watch;
+            }
         }
-
-        if (typeof watch === 'boolean')
-            options.watch = watch;
-
-        if (base)
-            options.base = base;
 
         Utils.appendBase(options);
 
