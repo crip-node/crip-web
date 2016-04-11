@@ -1,4 +1,5 @@
 var extend = require('extend'),
+    path = require('path'),
     gulpif = require('gulp-if'),
     Utils = require('./../Utils.js');
 
@@ -25,22 +26,28 @@ function Sass(Crip, gulp) {
         new Crip.Task('sass', name, action, options.src);
 
         function action() {
-            if (conf.minify) {
-                var minProcessors = extend([require('cssnano')], processors);
-                gulp.src(name)
-                    .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.init()))
-                    .pipe(gulpsass(conf.sass.options).on('error', gulpsass.logError))
-                    .pipe(postcss(minProcessors))
-                    .pipe(gulpif(renameOutput, require('gulp-rename')({basename: name, suffix: '.min', extname: '.css'})))
-                    .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.write(conf.sourcemaps.options)))
-                    .pipe(gulp.dest(options.output))
-            }
+            var outputFile = {basename: path.basename((renameOutput || name), '.scss'), extname: '.css'};
 
-            gulp.src(name)
+            // compile to .css
+            compile(outputFile, conf.sass.options)
+                // min only normal compilation is completed
+                .on('end', function () {
+                    if (conf.minify) {
+                        conf.sass.options.outputStyle = 'compressed';
+                        outputFile.suffix = '.min';
+
+                        // compile to .min.css
+                        compile(outputFile, conf.sass.options);
+                    }
+                });
+        }
+
+        function compile(outputFile, sassOptions) {
+            return gulp.src(path.join(options.base, name))
                 .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.init()))
-                .pipe(gulpsass(conf.sass.options).on('error', gulpsass.logError))
+                .pipe(gulpsass(sassOptions).on('error', gulpsass.logError))
                 .pipe(postcss(processors))
-                .pipe(gulpif(renameOutput, require('gulp-rename')({basename: name, extname: '.css'})))
+                .pipe(require('gulp-rename')(outputFile))
                 .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.write(conf.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
         }

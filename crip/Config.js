@@ -28,7 +28,7 @@ function Config(defaults) {
         autoprefix: {
             enabled: true,
             options: {
-                browsers: ['last 2 versions'],
+                browsers: ['last 8 version', 'ie >= 8'],
                 cascade: false
             }
         },
@@ -36,16 +36,24 @@ function Config(defaults) {
             enabled: true,
             options: {}
         },
+        // it does not work...
         pixrem: {
-            enabled: true,
-            options: {}
+            enabled: false,
+            options: {
+                rootValue: 16,
+                replace: false,
+                atrules: false,
+                html: true,
+                browsers: 'ie >= 8',
+                unitPrecision: 3
+            }
         },
         sass: {
             base: path.join(self.assets, 'sass'),
             output: path.join(self.output, 'css'),
             // https://github.com/sass/node-sass#options
             options: {
-                outputStyle: 'compressed',
+                outputStyle: 'nested',
                 precision: 10
             }
         }
