@@ -1,109 +1,33 @@
-# cripweb
-Fluent API for Gulp
+# cripweb 2
+Crip fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
 
-## Exports:
- - gulp: module included and extended gulp;
- - sass: allows register scss compilation;
- - sassConfig: configure scss compilation;
- - scripts: concat, minify and copy javascript files; (TODO: add jshint validation, sourcemaps)
- - scriptsConfig: configure js compilation;
- - styles: concat, minify stylesheets;
+## Crip exports tasks:
  - copy: copy files;
- - watch: add src to run task;
- - config: overall extension configuration;
- - tasks: list all registered tasks;
+ - watch: watch file changes and run tasks on change;
+ - scripts: concat, uglify and copy javascript files; (TODO: add jshint validation) 
+ - styles: concat and minify stylesheets; (TODO: fix pixrem)
+ - sass: compile sass in to css and minify;
+
  
 ## Examples:
 #### Compile sass
 ```js
 var gulp = require('gulp'),
-    cripweb = require('cripweb');
+    cripweb = require('cripweb')(gulp);
 
-cripweb.sass(
-    './src/sass/styles.scss',
-    './src/sass/**/*.scss',
-    'compile-sass',
-    'new-name',
-    './dist'
-);
-
-gulp.task('default', function () {
-    cripweb.gulp.start('compile-sass');
-    cripweb.watch();
+cripweb(function (crip) {
+    crip.sass('app.scss');
 });
-
-
-// Compiles `./src/sass/styles.scss` file to `./dist/new-name.css` and creates 
-// minified version of file `./dist/new-name.min.css`;
-//
-// When running `gulp default`, it compiles thous files and on change any of 
-// `./src/sass/**/*.scss` files, repeat this action;
 ```
 
 #### Concat js
 ```js
 var gulp = require('gulp'),
-    cripweb = require('cripweb');
+    cripweb = require('cripweb')(gulp);
 
-cripweb.scripts(
-    [
-        'app.js',
-        '**/*.js'
-    ],
-    'app',
-    'compile-js',
-    './src/js',
-    './dist'
-);
-
-gulp.task('default', function () {
-    cripweb.gulp.start('compile-js');
-    cripweb.watch();
-});
-
-// Compiles `./src/js/**/*.js` file to `./dist/app.js` and creates 
-// minified version of file `./dist/app.min.js`;
-//
-// When running `gulp default`, it compiles thous files and on change any of 
-// `./src/js/**/*.js` files, repeat this action;
-```
-
-#### See all registered tasks
-```js
-var gulp = require('gulp'),
-    cripweb = require('cripweb');
-    
-gulp.task('tasks', function () {
-    cripweb.tasks();
-});
-
-// CripWeb available tasks list: 
-//       - crip-default
-//       - crip-watch
-```
-
-## webhelp-default
-
-Runs all registered tasks throuth webhelp:
-```js
-gulp.task('my-task', function () {
-    // do something cool
-});
-
-cripweb.sass(
-    './src/sass/styles.scss',
-    './src/sass/**/*.scss',
-    'compile-sass',
-    'new-name',
-    './dist'
-);
-
-cripweb.watch('./src/*.html', 'my-task', gulp);
-
-gulp.task('default', function () {
-    cripweb.gulp.start('crip-default');
-    // will start 'compile-sass' and 'my-task' tasks
+cripweb(function (crip) {
+    crip.scripts('task-name', ['js/*.js', 'vendor/**/*.js'], 'assets/build/js', 'file-name', 'base-dir');
 });
 ```

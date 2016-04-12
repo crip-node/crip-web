@@ -24,6 +24,7 @@ function Crip(gulp, config) {
     require('./crip/tasks/watch.js')(scope, gulp);
     require('./crip/tasks/sass.js')(scope, gulp);
     require('./crip/tasks/styles.js')(scope, gulp);
+    require('./crip/tasks/scripts.js')(scope, gulp);
 
     return function (exec) {
         exec(scope.core);

@@ -75,15 +75,14 @@ function Config(defaults) {
     };
 
     this.js = {
-        src: 'js',
-        output: 'js',
+        base: path.join(self.assets, 'js'),
+        output: path.join(self.output, 'js'),
         uglify: {
             enabled: true,
             options: {}
         },
         sourcemaps: {
-            concat: true,
-            min: true,
+            enabled: true,
             options: {}
         }
     };
