@@ -1,6 +1,7 @@
 var Utils = require('./Utils'),
     watch = require('gulp-watch'),
-    batch = require('gulp-batch');
+    batch = require('gulp-batch'),
+    colors = require('colors');
 
 var Crip;
 
@@ -74,15 +75,25 @@ function register() {
  * @returns {*}
  */
 function run() {
-    if (Crip.activeTasks[this.id] === 0) {
-        Crip.activeTasks[this.id]++;
-        var result = this.fn();
-        Crip.activeTasks[this.id]--;
-
-        return result;
+    var self = this;
+    if (Crip.activeTasks[self.id] === 0) {
+        Crip.activeTasks[self.id]++;
+        log('CRIP start', self.id);
+        self.fn()
+            .on('end', function () {
+                log('CRIP done ', self.id);
+                Crip.activeTasks[self.id]--;
+            });
     }
+}
 
-    return false;
+function log(type, event) {
+    if (Crip.Config.get('log'))
+        console.log(timestamp() + (' ' + type + ' ').magenta + '\'' + event.cyan + '\'');
+}
+
+function timestamp() {
+    return '[' + ((new Date).toTimeString()).substr(0, 8).grey + ']';
 }
 
 /**
@@ -90,7 +101,6 @@ function run() {
  */
 function runAll() {
     _loopAllTasks(function (task) {
-        //task.run();//
         Crip.gulp.start(task.id);
     });
 }
@@ -103,10 +113,6 @@ function watchAll() {
         'use strict';
         if (task.globs) {
             watch(task.globs, batch(function (events, cb) {
-                /*events
-                 .on('data', console.log)
-                 .on('end', cb);*/
-                //task.run();
                 Crip.gulp.start(task.id, cb);
             }));
         }

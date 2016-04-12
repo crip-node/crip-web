@@ -1,19 +1,19 @@
 var extend = require('extend'),
     path = require('path'),
     gulpif = require('gulp-if'),
+    concat = require('gulp-concat'),
     Utils = require('./../Utils.js'),
     CssHelper = require('./../CssHelper.js');
 
-function Sass(Crip, gulp, cssHelper) {
-    Crip.extend('sass', sass);
+function Styles(Crip, gulp, cssHelper) {
+    Crip.extend('styles', styles);
 
-    function sass(name, output, renameOutput, watchlist, base) {
-        var gulpsass = require('gulp-sass'),
-            postcss = require('gulp-postcss'),
+    function styles(name, src, output, outputFileName, base) {
+        var postcss = require('gulp-postcss'),
             sourcemaps = require('gulp-sourcemaps'),
-            src = watchlist || name,
             conf = Crip.Config.get('css'),
-            options = extend({src: src}, conf.sass);
+            options = extend({src: src}, conf),
+            fileName = outputFileName ? path.basename(outputFileName, '.css') : name;
 
         if (output)
             options.output = output;
@@ -23,30 +23,29 @@ function Sass(Crip, gulp, cssHelper) {
 
         Utils.appendBase(options);
 
-        new Crip.Task('sass', name, action, options.src);
+        new Crip.Task('styles', name, action, options.src);
 
         function action() {
-            var outputFile = {basename: path.basename((renameOutput || name), '.scss'), extname: '.css'};
+            var outputFile = {basename: fileName, extname: '.css'};
 
             // compile to .css
-            return compile(outputFile, conf.sass.options)
+            return compile(outputFile, false)
                 // min only normal compilation is completed
                 .on('end', function () {
                     if (conf.minify) {
-                        conf.sass.options.outputStyle = 'compressed';
                         outputFile.suffix = '.min';
 
                         // compile to .min.css
-                        return compile(outputFile, conf.sass.options);
+                        return compile(outputFile, true);
                     }
                 });
         }
 
-        function compile(outputFile, sassOptions) {
-            return gulp.src(path.join(options.base, name))
+        function compile(outputFile, enableCssnano) {
+            return gulp.src(options.src)
                 .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.init()))
-                .pipe(gulpsass(sassOptions).on('error', gulpsass.logError))
-                .pipe(postcss(cssHelper.processors()))
+                .pipe(concat('processing-name.css'))
+                .pipe(postcss(cssHelper.processors(enableCssnano)))
                 .pipe(require('gulp-rename')(outputFile))
                 .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.write(conf.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
@@ -59,7 +58,7 @@ function Sass(Crip, gulp, cssHelper) {
 
 
 module.exports = function (Crip, gulp) {
-    new Sass(Crip, gulp, new CssHelper(Crip));
+    new Styles(Crip, gulp, new CssHelper(Crip));
 
     return Crip.core;
 };

@@ -23,7 +23,7 @@ function Watch(Crip, gulp) {
         new Crip.Task('watch', name, action, options.src);
 
         function action() {
-            gulp.start(tasks);
+            return gulp.start(tasks);
         }
 
         // allow chain methods

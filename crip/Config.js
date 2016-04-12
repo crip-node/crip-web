@@ -7,6 +7,9 @@ function Config(defaults) {
     this.assets = './assets/src';
     this.output = './assets/build';
 
+    // enable CRIP logs in console
+    this.log = true;
+
     // copy gulp.src options object. Supports:
     // https://github.com/isaacs/node-glob#options
     // watch - is watch enabled for coping
@@ -22,9 +25,11 @@ function Config(defaults) {
     };
 
     this.css = {
-        src: path.join(self.assets, 'css'),
+        base: path.join(self.assets, 'css'),
         output: path.join(self.output, 'css'),
+        // create .min.css file
         minify: true,
+        // writes autoprefixes for css
         autoprefix: {
             enabled: true,
             options: {
@@ -32,6 +37,7 @@ function Config(defaults) {
                 cascade: false
             }
         },
+        // writes sourcemaps
         sourcemaps: {
             enabled: true,
             options: {}
@@ -46,6 +52,15 @@ function Config(defaults) {
                 html: true,
                 browsers: 'ie >= 8',
                 unitPrecision: 3
+            }
+        },
+        // used to minify styles task result
+        cssnano: {
+            // enabled when styles task min version compiles
+            options: {
+                discardComments: {
+                    removeAll: true
+                }
             }
         },
         sass: {
