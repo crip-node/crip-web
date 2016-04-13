@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
-    cripweb = require('./index.js')(gulp);
+    cripweb = require('./index.js');
 
-cripweb(function (crip) {
+cripweb(gulp, {log: false})(function (crip) {
     crip.copy('gulpfile', 'gulpfile.js', false)
         .watch('gulpfile', 'gulpfile.js', 'copy-gulpfile')
         .sass('app.scss')

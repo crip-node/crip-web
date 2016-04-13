@@ -3,6 +3,36 @@ Crip fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
 
+## Configurations
+
+To overwrite configuration defaults, you can simply pass an configuration object directly for constructor, or physical path of configuration json file.
+
+Physical path of configuration json file:
+```js
+var gulp = require('gulp'),
+    cripweb = require('./index.js');
+    
+cripweb(gulp, './settings.json')(function (crip) {
+    // do your cool stuff here
+});
+```
+
+Configuration object directly:
+```js
+var gulp = require('gulp'),
+    cripweb = require('./index.js');
+
+cripweb(gulp, {log: false})(function (crip) {
+    // do your cool stuff here
+});
+```
+
+Default CripWeb configuration:
+
+```js
+
+```
+
 ## Crip exports tasks:
  - copy: copy files;
  - watch: watch file changes and run tasks on change;

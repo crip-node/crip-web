@@ -1,5 +1,6 @@
 var path = require('path'),
-    Utils = require('./Utils.js');
+    Utils = require('./Utils.js'),
+    extend = require('extend');
 
 function Config(defaults) {
     var self = this;
@@ -87,7 +88,7 @@ function Config(defaults) {
         }
     };
 
-    // TODO: apply defaults for object
+    extend(true, this, defaults);
 
     /**
      * Fetch a config item, using a string dot-notation.

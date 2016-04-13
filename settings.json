@@ -1,0 +1,9 @@
+{
+  "assets": "./assets/src",
+  "log": false,
+  "copy": {
+    "base": "",
+    "watch": false,
+    "output": "./assets/build"
+  }
+}
