@@ -5,7 +5,10 @@ cripweb(gulp)(function (crip) {
     crip.config.set('js.uglify.enabled', true)
         //.config.set('settings.json')
         .config.set({'log': false})
-        .config.set({js: {uglify: {options: {}}}});
+        .config.set({js: {sourcemaps: {enabled: false}}});
+
+    console.log(crip.config.get('js'));
+
     crip.copy('gulpfile', 'gulpfile.js', false)
         .watch('gulpfile', 'gulpfile.js', 'copy-gulpfile')
         .sass('app.scss')

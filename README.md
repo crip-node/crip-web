@@ -10,7 +10,7 @@ To overwrite configuration defaults, you can simply pass an configuration object
 Physical path of configuration json file:
 ```js
 var gulp = require('gulp'),
-    cripweb = require('./index.js');
+    cripweb = require('cripweb');
     
 cripweb(gulp, './settings.json')(function (crip) {
     // do your cool stuff here
@@ -20,10 +20,22 @@ cripweb(gulp, './settings.json')(function (crip) {
 Configuration object directly:
 ```js
 var gulp = require('gulp'),
-    cripweb = require('./index.js');
+    cripweb = require('cripweb');
 
 cripweb(gulp, {log: false})(function (crip) {
     // do your cool stuff here
+});
+```
+
+Inline configuration:
+```js
+var gulp = require('gulp'),
+    cripweb = require('cripweb');
+    
+cripweb(gulp)(function (crip) {
+    crip.config.set('./settings.json') // path of configuration json file
+        .config.set('js.uglify.enabled', true) // dot notation path for option
+        .config.set({log: true, js: {sourcemaps: {enabled: false}}}); // directly object properties
 });
 ```
 
