@@ -24,15 +24,15 @@ function Copy(Crip, gulp) {
                 options.output = output;
 
             // watch = undefined, base = watch
-            if (typeof base === 'boolean') {
+            if (typeof base === 'boolean')
                 options.watch = base;
-            } else {
-                if (base)
-                    options.base = base;
-                if (typeof watch === 'boolean')
-                    options.watch = watch;
-            }
         }
+
+        if (typeof base !== 'boolean' && base)
+            options.base = base;
+
+        if (typeof watch === 'boolean')
+            options.watch = watch;
 
         Utils.appendBase(options);
 

@@ -7,8 +7,6 @@ cripweb(gulp)(function (crip) {
         .config.set({'log': false})
         .config.set({js: {sourcemaps: {enabled: false}}});
 
-    console.log(crip.config.get('js'));
-
     crip.copy('gulpfile', 'gulpfile.js', false)
         .watch('gulpfile', 'gulpfile.js', 'copy-gulpfile')
         .sass('app.scss')

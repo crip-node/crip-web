@@ -121,6 +121,36 @@ Default CripWeb configuration:
  - styles: concat and minify stylesheets; (TODO: fix pixrem)
  - sass: compile sass in to css and minify;
 
+
+#### crip.copy
+
+``crip.copy( name, src [, output [, base [, watch ] ] ] )``
+
+**name**
+Type: string
+
+**src**
+Type: string or array
+
+**output**
+Type: string or boolean
+
+Output location of files to be copied. 
+By default is used configuration ``copy.otput`` value (``./assets/build``).
+If presented as boolean, it is used as ``watch`` parameter.
+
+**base**
+Type: string or boolean
+
+Prefix for all ``src`` items.
+By default is used configuration ``copy.base`` value (````).
+If presented as boolean, it is used as ``watch`` parameter.
+
+**watch**
+Type: boolean
+
+If it is `false`, after task is completed it will be closed. If `true` - watch will be applied for src items and vill be copied after change.
+
  
 ## Examples:
 #### Compile sass
