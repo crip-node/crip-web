@@ -1,4 +1,4 @@
-# cripweb 2
+# CripWeb 2
 Crip fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
@@ -29,8 +29,77 @@ cripweb(gulp, {log: false})(function (crip) {
 
 Default CripWeb configuration:
 
-```js
-
+```json
+{
+  "assets": "./assets/src",
+  "output": "./assets/build",
+  "log": false,
+  "copy": {
+    "base": "",
+    "watch": false,
+    "output": "./assets/build"
+  },
+  "watch": {
+    "base": ""
+  },
+  "css": {
+    "base": "./assets/src/css",
+    "output": "./assets/build/css",
+    "minify": true,
+    "autoprefix": {
+      "enabled": true,
+      "options": {
+        "browsers": [
+          "last 8 version",
+          "ie >= 8"
+        ],
+        "cascade": false
+      }
+    },
+    "sourcemaps": {
+      "enabled": true,
+      "options": {}
+    },
+    "pixrem": {
+      "enabled": false,
+      "options": {
+        "rootValue": 16,
+        "replace": false,
+        "atrules": false,
+        "html": true,
+        "browsers": "ie >= 8",
+        "unitPrecision": 3
+      }
+    },
+    "cssnano": {
+      "options": {
+        "discardComments": {
+          "removeAll": true
+        }
+      }
+    },
+    "sass": {
+      "base": "./assets/src/sass",
+      "output": "./assets/build/css",
+      "options": {
+        "outputStyle": "nested",
+        "precision": 10
+      }
+    }
+  },
+  "js": {
+    "base": "./assets/src/js",
+    "output": "./assets/src/js",
+    "uglify": {
+      "enabled": true,
+      "options": {}
+    },
+    "sourcemaps": {
+      "enabled": true,
+      "options": {}
+    }
+  }
+}
 ```
 
 ## Crip exports tasks:

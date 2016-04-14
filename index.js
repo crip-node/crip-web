@@ -16,7 +16,9 @@ function Crip(gulp, config) {
     this.extend = _extend;
     this.activeTasks = {};
     this.tasks = {};
-    this.core = {};
+    this.core = {
+        config: configure
+    };
 
 
     // initialise all tasks
@@ -75,6 +77,9 @@ function createGulpTask(Crip, task) {
     });
 }
 
+/**
+ * Create default tasks for crip
+ */
 function createGulpDefaultTasks() {
     var self = this;
     this.gulp.task('default', function () {
@@ -97,6 +102,14 @@ function readConfig(file) {
     if (fs.existsSync(file)) {
         return JSON.parse(fs.readFileSync(file, 'utf8'));
     }
+}
+
+function configure(keyPath, value) {
+    if(typeof value === 'undefined') {
+        value = keyPath;
+    }
+
+
 }
 
 /**
