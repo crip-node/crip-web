@@ -1,10 +1,13 @@
 var path = require('path'),
     Utils = require('./Utils.js'),
+    colors = require('colors'),
+    fs = require('fs'),
     extend = require('extend');
 
-function Config(defaults) {
+function Config(Crip, defaults) {
     var self = this;
     this.get = get;
+    this.set = set;
     this.assets = './assets/src';
     this.output = './assets/build';
 
@@ -88,17 +91,25 @@ function Config(defaults) {
         }
     };
 
-    extend(true, this, defaults);
+    if (defaults)
+        this.set(defaults);
 
     /**
      * Fetch a config item, using a string dot-notation.
      *
-     * @param  {string} configPath
+     * @param  {String} configPath
+     * @param {Boolean} [getParent]
      * @return {string}
      */
-    function get(configPath) {
+    function get(configPath, getParent) {
         var current = self,
             segments = configPath.split('.');
+
+        if (getParent)
+            segments = segments.slice(0, -1);
+
+        if (segments[0] === '')
+            segments = segments.slice(1);
 
         Utils.forEach(segments, function (segment) {
             current = current[segment];
@@ -106,9 +117,61 @@ function Config(defaults) {
 
         return current;
     }
+
+    /**
+     *
+     * Set a config section object, using a string dot-notation.
+     *
+     * @param {String|Object} configPath|value
+     * @param {Object} [value]
+     *
+     * @returns {Object}
+     */
+    function set(configPath, value) {
+        if (typeof configPath === 'undefined' && typeof value === 'undefined') {
+            console.log('Undefined configuration change parameters'.red);
+            return Crip.core;
+        }
+
+        var configPathToSet = arguments[0],
+            valueToSet = arguments[1];
+
+        if (typeof arguments[1] === 'undefined') {
+            valueToSet = arguments[0];
+            configPathToSet = '';
+
+            if (typeof valueToSet === 'string')
+                valueToSet = readConfig(valueToSet);
+        }
+
+        var isPrimitive = typeof valueToSet !== 'object',
+            obj = get(configPathToSet, isPrimitive),
+            lastKey = configPathToSet.split('.').slice(-1)[0];
+
+        if (isPrimitive && typeof obj[lastKey] === typeof valueToSet)
+            obj[lastKey] = valueToSet;
+        else
+        // if we overwrite with object, we can do it using js references
+            extend(true, get(configPathToSet), valueToSet);
+
+        // allow chain after configuration update
+        return Crip.core;
+    }
+
+
+    /**
+     * Extend config from file
+     *
+     * @param {String} file Config file location
+     */
+    function readConfig(file) {
+        if (fs.existsSync(file)) {
+            return JSON.parse(fs.readFileSync(file, 'utf8'));
+        }
+    }
 }
 
 
-module.exports = function (defaults) {
-    return new Config(defaults);
+module.exports = function (Crip, defaults) {
+    return new Config(Crip, defaults);
 };

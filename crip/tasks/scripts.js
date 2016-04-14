@@ -56,19 +56,23 @@ function Scripts(Crip, gulp) {
             var outputFile = {basename: fileName, extname: '.js'};
 
             return gulp.src(options.src)
+                .pipe(gulpif(conf.sourcemaps.enabled && conf.uglify.enabled && options.concat,
+                    sourcemaps.init()))
                 .pipe(gulpif(conf.sourcemaps.enabled && options.concat, sourcemaps.init()))
                 .pipe(gulpif(options.concat, concat('processing-name.js')))
                 .pipe(gulpif(options.concat, rename(outputFile)))
+                .pipe(gulpif(conf.sourcemaps.enabled && options.concat, sourcemaps.write(conf.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
-                .pipe(gulpif(conf.uglify && !options.concat, foreach(function (stream, file) {
+                .pipe(gulpif(conf.uglify.enabled && !options.concat, foreach(function (stream, file) {
                     return stream.pipe(uglify(conf.uglify.options))
                         .pipe(rename({suffix: '.min'}));
                 })))
-                .pipe(gulpif(conf.uglify && !options.concat, gulp.dest(options.output)))
-                .pipe(gulpif(conf.uglify && options.concat, uglify(conf.uglify.options)))
-                .pipe(gulpif(conf.uglify && options.concat, rename({suffix: '.min'})))
-                .pipe(gulpif(conf.sourcemaps.enabled && options.concat, sourcemaps.write(conf.sourcemaps.options)))
-                .pipe(gulpif(conf.uglify && options.concat, gulp.dest(options.output)));
+                .pipe(gulpif(conf.uglify.enabled && !options.concat, gulp.dest(options.output)))
+                .pipe(gulpif(conf.uglify.enabled && options.concat, uglify(conf.uglify.options)))
+                .pipe(gulpif(conf.uglify.enabled && options.concat, rename({suffix: '.min'})))
+                .pipe(gulpif(conf.sourcemaps.enabled && conf.uglify.enabled && options.concat,
+                    sourcemaps.write(conf.sourcemaps.options)))
+                .pipe(gulpif(conf.uglify.enabled && options.concat, gulp.dest(options.output)));
         }
 
         // allow chain methods

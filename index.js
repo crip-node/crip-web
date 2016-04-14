@@ -1,23 +1,18 @@
-var fs = require('fs'),
-    extend = require('extend'),
+var extend = require('extend'),
     watch = require('gulp-watch'),
     Utils = require('./crip/Utils');
 
 function Crip(gulp, config) {
-    var scope = this,
-        defaults = false;
-
-    if (config && typeof config === 'string')
-        defaults = readConfig(config);
+    var scope = this;
 
     this.gulp = gulp;
     this.Task = require('./crip/Task')(scope);
-    this.Config = require('./crip/Config')((defaults || config));
+    this.Config = require('./crip/Config')(scope, config);
     this.extend = _extend;
     this.activeTasks = {};
     this.tasks = {};
     this.core = {
-        config: configure
+        config: scope.Config
     };
 
 
@@ -91,25 +86,6 @@ function createGulpDefaultTasks() {
     this.gulp.task('watch', function () {
         self.Task.watchAll();
     });
-}
-
-/**
- * Extend config from file
- *
- * @param {String} file Config file location
- */
-function readConfig(file) {
-    if (fs.existsSync(file)) {
-        return JSON.parse(fs.readFileSync(file, 'utf8'));
-    }
-}
-
-function configure(keyPath, value) {
-    if(typeof value === 'undefined') {
-        value = keyPath;
-    }
-
-
 }
 
 /**
