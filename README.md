@@ -122,9 +122,7 @@ Default CripWeb configuration:
  - sass: compile sass in to css and minify;
 
 
-#### crip.copy
-
-``crip.copy( name, src [, output [, base [, watch ] ] ] )``
+#### crip.copy( name, src [, output [, base [, watch ] ] ] )
 
 ##### name
 Type: `string`
