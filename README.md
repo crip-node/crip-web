@@ -126,30 +126,34 @@ Default CripWeb configuration:
 
 ``crip.copy( name, src [, output [, base [, watch ] ] ] )``
 
-**name**
-Type: string
+##### name
+Type: `string`
 
-**src**
-Type: string or array
+Task name for gulp output. Will be prefixed with `copy-`.
 
-**output**
-Type: string or boolean
+##### src
+Type: `string` or `array`
 
-Output location of files to be copied. 
+Glob or array of globs to read.
+
+##### output
+Type: `string` or `boolean`
+
+The path (output folder) to write files to.
 By default is used configuration ``copy.otput`` value (``./assets/build``).
 If presented as boolean, it is used as ``watch`` parameter.
 
-**base**
-Type: string or boolean
+##### base
+Type: `string` or `boolean`
 
-Prefix for all ``src`` items.
-By default is used configuration ``copy.base`` value (````).
-If presented as boolean, it is used as ``watch`` parameter.
+The place where patterns starting with / will be mounted onto `src` items.
+By default is used configuration `copy.base` value (`empty string`).
+If presented as boolean, it is used as `watch` parameter.
 
-**watch**
-Type: boolean
+##### watch
+Type: `boolean`
 
-If it is `false`, after task is completed it will be closed. If `true` - watch will be applied for src items and vill be copied after change.
+If it is `false`, after task is completed it will be closed. If `true` - watch will be applied for `src` items and will be copied on each change.
 
  
 ## Examples:
