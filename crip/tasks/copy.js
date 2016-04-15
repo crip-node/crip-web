@@ -39,7 +39,7 @@ function Copy(Crip, gulp) {
         new Crip.Task('copy', name, action, options.watch ? options.src : false);
 
         function action() {
-            return gulp.src(src)
+            return gulp.src(options.src)
                 .pipe(gulp.dest(options.output));
         }
 
