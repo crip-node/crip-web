@@ -4,7 +4,6 @@
   "log": false,
   "copy": {
     "base": "",
-    "watch": false,
     "output": "./assets/build"
   },
   "watch": {

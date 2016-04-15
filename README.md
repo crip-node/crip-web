@@ -122,7 +122,7 @@ Default CripWeb configuration:
  - sass: compile sass in to css and minify;
 
 
-#### crip.copy( name, src [, output [, base [, watch ] ] ] )
+#### crip.copy( name, src [, output , base , watch ] )
 
 ##### name
 Type: `string`
@@ -135,24 +135,33 @@ Type: `string` or `array`
 Glob or array of globs to read.
 
 ##### output
-Type: `string` or `boolean`
+Type: `string`
 
 The path (output folder) to write files to.
 By default is used configuration ``copy.otput`` value (``./assets/build``).
 If presented as boolean, it is used as ``watch`` parameter.
 
 ##### base
-Type: `string` or `boolean`
+Type: `string`
 
 The place where patterns starting with / will be mounted onto `src` items.
 By default is used configuration `copy.base` value (`empty string`).
 If presented as boolean, it is used as `watch` parameter.
 
-##### watch
-Type: `boolean`
+```js
+var gulp = require('gulp'),
+    cripweb = require('./index.js');
 
-If it is `false`, after task is completed it will be closed. If `true` - watch will be applied for `src` items and will be copied on each change.
-
+cripweb(gulp)(function (crip) {
+    crip.copy('build', ['vendor.js', 'core.js', 'app.js'], 'application/scripts', 'assets/build/js');
+    // will make available gulp tasks 'copy' and 'copy-build'
+    // will copy 'assets/build/js/vendor.js', 'assets/build/js/core.js' and 'assets/build/js/app.js' to './application/scripts/' folder
+    
+    crip.config.set('copy', {base: 'assets/src', output: 'assets/copy'})
+        .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
+    // after this configuration change this task will copy all files and folders from './assets/src/css/' to './assets/copy/css' folder
+});
+```
  
 ## Examples:
 #### Compile sass

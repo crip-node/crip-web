@@ -11,7 +11,7 @@ var Task = function (section, name, fn, globs) {
     this.id = section + '-' + name;
 
     if (globs)
-        this.globs = globs;
+        this.watch(globs);
 
     if (fn)
         this.describe(fn);
@@ -24,6 +24,7 @@ Task.watchAll = watchAll;
 Task.prototype = {
     describe: describe,
     register: register,
+    watch: watchGlobs,
     run: run
 };
 
@@ -78,22 +79,30 @@ function run() {
     var self = this;
     if (Crip.activeTasks[self.id] === 0) {
         Crip.activeTasks[self.id]++;
-        log('CRIP start', self.id);
-        self.fn()
-            .on('end', function () {
-                log('CRIP done ', self.id);
+        log('CRIP start', self.id, ' ...');
+        var curr = new Date();
+        return self.fn()
+            .on('finish', function () {
+                log('CRIP done ',
+                    self.id,
+                    ' after ' + ((new Date() - curr) + ' ms').magenta);
                 Crip.activeTasks[self.id]--;
             });
     }
 }
 
-function log(type, event) {
+function log(type, event, post) {
     if (Crip.Config.get('log'))
-        console.log(timestamp() + (' ' + type + ' ').magenta + '\'' + event.cyan + '\'');
+        console.log(timestamp() + (' ' + type + ' ').magenta + '\'' + event.cyan + '\'' + (post ? post : ''));
 }
 
 function timestamp() {
     return '[' + ((new Date).toTimeString()).substr(0, 8).grey + ']';
+}
+
+function watchGlobs(globs) {
+    this.globs = globs;
+
 }
 
 /**
@@ -101,7 +110,7 @@ function timestamp() {
  */
 function runAll() {
     _loopAllTasks(function (task) {
-        Crip.gulp.start(task.id);
+        task.run();
     });
 }
 
@@ -112,8 +121,8 @@ function watchAll() {
     _loopAllTasks(function (task) {
         'use strict';
         if (task.globs) {
-            watch(task.globs, batch(function (events, cb) {
-                Crip.gulp.start(task.id, cb);
+            watch(task.globs, batch(function () {
+                return task.run();
             }));
         }
     });

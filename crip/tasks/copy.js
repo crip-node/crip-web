@@ -8,35 +8,23 @@ function Copy(Crip, gulp) {
      * @param {String} name Copy task name
      * @param {Array|String} src Globs object
      * @param {String} [output] default: Config.copy.output ('./assets/build')
-     * @param {String|Boolean} [base] default: Config.copy.base ('')
-     * @param {Boolean} [watch] default: Config.copy.watch (true)
+     * @param {String} [base] default: Config.copy.base ('')
      *
      * @returns {Object}
      */
-    function copy(name, src, output, base, watch) {
+    function copy(name, src, output, base) {
         var options = extend({src: src}, Crip.Config.get('copy'));
 
-        // base && watch = undefined, output = watch
-        if (typeof output === 'boolean') {
-            options.watch = output;
-        } else {
-            if (output)
-                options.output = output;
+        if (output)
+            options.output = output;
 
-            // watch = undefined, base = watch
-            if (typeof base === 'boolean')
-                options.watch = base;
-        }
-
-        if (typeof base !== 'boolean' && base)
+        // watch = undefined, base = watch
+        if (base)
             options.base = base;
-
-        if (typeof watch === 'boolean')
-            options.watch = watch;
 
         Utils.appendBase(options);
 
-        new Crip.Task('copy', name, action, options.watch ? options.src : false);
+        new Crip.Task('copy', name, action, options.src);
 
         function action() {
             return gulp.src(options.src)

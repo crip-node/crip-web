@@ -16,11 +16,9 @@ function Config(Crip, defaults) {
 
     // copy gulp.src options object. Supports:
     // https://github.com/isaacs/node-glob#options
-    // watch - is watch enabled for coping
     // output - copy output location
     this.copy = {
         base: '',
-        watch: true,
         output: path.join(self.output)
     };
 
