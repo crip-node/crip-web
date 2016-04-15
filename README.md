@@ -139,31 +139,72 @@ Type: `string`
 
 The path (output folder) to write files to.
 By default is used configuration ``copy.otput`` value (``./assets/build``).
-If presented as boolean, it is used as ``watch`` parameter.
 
 ##### base
 Type: `string`
 
 The place where patterns starting with / will be mounted onto `src` items.
 By default is used configuration `copy.base` value (`empty string`).
-If presented as boolean, it is used as `watch` parameter.
 
 ```js
 var gulp = require('gulp'),
     cripweb = require('cripweb');
 
 cripweb(gulp)(function (crip) {
+
     crip.copy('build', ['vendor.js', 'core.js', 'app.js'], 'application/scripts', 'assets/build/js');
-    
     // Will make available gulp tasks 'copy' and 'copy-build'
     // Will copy 'assets/build/js/vendor.js', 'assets/build/js/core.js' and 
     //  'assets/build/js/app.js' to './application/scripts/' folder
     
     crip.config.set('copy', {base: 'assets/src', output: 'assets/copy'})
-        .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
-        
+        .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css'); 
+    // Will make available gulp task 'copy-src-clone'
     // After this configuration change this task will copy all files and folders 
     //  from './assets/src/css/' to './assets/copy/css' folder
+});
+```
+ 
+#### crip.watch( name, src , deps [, base ] )
+
+##### name
+Type: `string`
+
+Task name for gulp output. Will be prefixed with `copy-`.
+
+##### src
+Type: `string` or `array`
+
+Glob or array of globs to read.
+
+##### deps
+Type: `string` or `array`
+
+Sting or array of tasks to be executed and completed on src globs change.
+
+##### base
+Type: `string`
+
+The place where patterns starting with / will be mounted onto `src` items.
+By default is used configuration `watch.base` value (`empty string`).
+
+```js
+var gulp = require('gulp'),
+    cripweb = require('cripweb');
+    
+gulp.task('task-name', function(){
+    // do your default gulp stuff
+});
+
+cripweb(gulp)(function (crip) {
+    
+    crip.watch('styles', 'css/**/*', ['copy-src-clone', 'task-name'], 'assets/src');
+    
+    // Will make available gulp task 'watch-styles'
+    // Will start gulp tasks 'copy-src-clone' and 'task-name' when src globs changes
+    
+    crip.config.set('copy', {base: 'assets/src', output: 'assets/copy', watch: false})
+         .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
 });
 ```
  

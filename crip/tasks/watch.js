@@ -1,18 +1,20 @@
 var extend = require('extend'),
+    watch = require('gulp-watch'),
+    batch = require('gulp-batch'),
     Utils = require('./../Utils.js');
 
 function Watch(Crip, gulp) {
-    Crip.extend('watch', watch);
+    Crip.extend('watch', watcher);
 
     /**
      * @param {String} name
      * @param {Array|String} src
-     * @param {Array|String} tasks
+     * @param {Array|String} deps
      * @param {String} [base]
      *
      * @returns {Object}
      */
-    function watch(name, src, tasks, base) {
+    function watcher(name, src, deps, base) {
         var options = extend({src: src}, Crip.Config.get('watch'));
 
         if (base)
@@ -23,7 +25,9 @@ function Watch(Crip, gulp) {
         new Crip.Task('watch', name, action, options.src);
 
         function action() {
-            return gulp.start(tasks);
+            return watch(options.src, batch(function (a, b) {
+                return gulp.start(deps, b);
+            }));
         }
 
         // allow chain methods
