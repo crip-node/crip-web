@@ -122,7 +122,7 @@ Default CripWeb configuration:
  - sass: compile sass in to css and minify;
 
 
-#### crip.copy( name, src [, output , base , watch ] )
+#### crip.copy( name, src [, output , base ] )
 
 ##### name
 Type: `string`
@@ -150,16 +150,20 @@ If presented as boolean, it is used as `watch` parameter.
 
 ```js
 var gulp = require('gulp'),
-    cripweb = require('./index.js');
+    cripweb = require('cripweb');
 
 cripweb(gulp)(function (crip) {
     crip.copy('build', ['vendor.js', 'core.js', 'app.js'], 'application/scripts', 'assets/build/js');
-    // will make available gulp tasks 'copy' and 'copy-build'
-    // will copy 'assets/build/js/vendor.js', 'assets/build/js/core.js' and 'assets/build/js/app.js' to './application/scripts/' folder
+    
+    // Will make available gulp tasks 'copy' and 'copy-build'
+    // Will copy 'assets/build/js/vendor.js', 'assets/build/js/core.js' and 
+    //  'assets/build/js/app.js' to './application/scripts/' folder
     
     crip.config.set('copy', {base: 'assets/src', output: 'assets/copy'})
         .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
-    // after this configuration change this task will copy all files and folders from './assets/src/css/' to './assets/copy/css' folder
+        
+    // After this configuration change this task will copy all files and folders 
+    //  from './assets/src/css/' to './assets/copy/css' folder
 });
 ```
  
