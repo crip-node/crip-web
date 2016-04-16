@@ -1,8 +1,8 @@
 {
   "name": "cripweb",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
-  "main": "gulpfile.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
