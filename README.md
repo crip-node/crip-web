@@ -11,7 +11,7 @@ Physical path of configuration json file:
 ```js
 var gulp = require('gulp'),
     cripweb = require('cripweb');
-    
+
 cripweb(gulp, './settings.json')(function (crip) {
     // do your cool stuff here
 });
@@ -31,7 +31,7 @@ Inline configuration:
 ```js
 var gulp = require('gulp'),
     cripweb = require('cripweb');
-    
+
 cripweb(gulp)(function (crip) {
     crip.config.set('./settings.json') // path of configuration json file
         .config.set('js.uglify.enabled', true) // dot notation path for option
@@ -156,7 +156,7 @@ cripweb(gulp)(function (crip) {
     // Will make available gulp tasks 'copy' and 'copy-build'
     // Will copy 'assets/build/js/vendor.js', 'assets/build/js/core.js' and 
     //  'assets/build/js/app.js' to './application/scripts/' folder
-    
+
     crip.config.set('copy', {base: 'assets/src', output: 'assets/copy'})
         .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css'); 
     // Will make available gulp task 'copy-src-clone'
@@ -191,17 +191,17 @@ By default is used configuration `watch.base` value (`empty string`).
 ```js
 var gulp = require('gulp'),
     cripweb = require('cripweb');
-    
+
 gulp.task('task-name', function(){
     // do your default gulp stuff
 });
 
 cripweb(gulp)(function (crip) {
-    
+
     crip.watch('styles', 'css/**/*', ['copy-src-clone', 'task-name'], 'assets/src');
     // Will make available gulp task 'watch-styles'
     // Will start gulp tasks 'copy-src-clone' and 'task-name' when src globs changes
-    
+
     crip.config.set('copy', {base: 'assets/src', output: 'assets/copy', watch: false})
          .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
 });
@@ -246,26 +246,26 @@ cripweb(gulp)(function (crip) {
     // Will make available gulp tasks 'scripts' and 'scripts-build'
     // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
     //  'assets/build/js/app-scripts.js' and 'assets/build/js/app-scripts.min.js' files
-    
+
     // If outputFileName is not presented, task name will be used for new file names:
-    
+
     crip.scripts('build-2', ['components/*.js', 'index.js'], 'assets/build/js', 'assets/src/js');
     // Will make available gulp task 'scripts-build-2'
     // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
     //  'assets/build/js/build-2.js' and 'assets/build/js/build-2.min.js' files
-    
+
     // If outputFileName is presented as boolean, it is used af flag for concatenation:
-    
+
     crip.scripts('build-3', ['root.js', 'index.js'], 'assets/build/js', false, 'assets/src/js');
     // Will make available gulp task 'scripts-build-3'
     // Will make copy of 'assets/src/js/root.js' and 'assets/src/js/index.js' files and its 
     //  minimized version in output folder:
     //    - 'assets/build/js/root.js' and 'assets/build/js/root.min.js'
     //    - 'assets/build/js/index.js' and 'assets/build/js/index.min.js'
-    
+
     // If you already configured your scripts output and you no need to concatenate, 
     //  use output as concatenate flag:
-    
+
     crip.config.set('js', {output: 'assets/build/js', uglify: {enabled: false}})
         .scripts('build-4', ['root.js', 'index.js'], false, 'assets/src/js');
         // Will make available gulp task 'scripts-build-4'
@@ -310,18 +310,72 @@ var gulp = require('gulp'),
     cripweb = require('cripweb');
 
 cripweb(gulp)(function (crip) {
-    
+
     crip.styles('app', ['index.css', '**/*.css'], 'assets/build', 'app-styles', 'assets/src/css');
     // Will make available gulp tasks 'styles' and 'styles-app'
     // Will concatenate and copy files 'assets/src/css/index.css' and 'assets/src/css/**/*.css' to 
     //  'assets/build/app-styles.css' and 'ssets/build/app-styles.min.css' files
-    
+
     // If outputFileName is not presented, task name will be used for new file names:
-    
+
     crip.styles('app-2', ['index.css', '**/*.css'], 'assets/build', 'assets/src/css');
     // Will make available gulp task 'styles-app-2'
     // Will concatenate and copy files 'assets/src/css/index.css' and 'assets/src/css/**/*.css' to 
     //  'assets/build/app-2.css' and 'ssets/build/app-2.min.css' files
-    
+
+});
+```
+ 
+### crip.sass( name, file , [ output , outputFileName , watchlist , base ] )
+
+##### name
+Type: `string`
+
+Task name for gulp output. Will be prefixed with `sass-`.
+
+##### file
+Type: `string`
+
+Sass file, to be compiled.
+
+##### output
+Type: `string`
+
+The path (output folder) to write files to.
+By default is used configuration `css.sass.output` value (`./assets/build/css`).
+
+##### outputFileName
+Type: `string`
+
+The name of the new file. By default will be used compiled file basename.
+
+##### watchlist
+Type: `string` or `array`
+
+Glob or array of globs to watch changes.
+
+##### base
+Type: `string`
+
+The place where patterns starting with / will be mounted onto `src` items.
+By default is used configuration `css.sass.base` value (`./assets/src/sass`).
+
+```js
+var gulp = require('gulp'),
+    cripweb = require('cripweb');
+
+cripweb(gulp)(function (crip) {
+
+    crip.sass('app-1', 'assets/src/sass/app.scss', 'assets/compiled-sass', 'file-name', '**/*.scss', 'assets/src/sass');
+    // Will make available gulp tasks 'sass' and 'sass-app-1'
+    // Will compile 'assets/src/sass/app.scss' file to 'assets/compiled-sass/file-name.css'
+    // When watch task runs, it will watch 'assets/src/sass/**/*.scss' files and rerun this task on change event
+
+    crip.config.set('css.sass', {output: 'assets/compiled-sass'})
+        .sass('assets/src/sass/app.scss');
+    // Will make available gulp task 'sass-app'
+    // Will compile 'assets/src/sass/app.scss' file to 'assets/compiled-sass/app.css'
+    // When watch task runs, it will watch 'assets/src/sass/app.scss' file and rerun this task on change event
+
 });
 ```

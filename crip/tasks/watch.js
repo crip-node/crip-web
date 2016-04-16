@@ -17,7 +17,7 @@ function Watch(Crip, gulp) {
     function watcher(name, src, deps, base) {
         var options = extend({src: src}, Crip.Config.get('watch'));
 
-        if (base)
+        if (base || base === '')
             options.base = base;
 
         Utils.appendBase(options);

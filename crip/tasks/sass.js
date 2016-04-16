@@ -7,26 +7,45 @@ var extend = require('extend'),
 function Sass(Crip, gulp, cssHelper) {
     Crip.extend('sass', sass);
 
-    function sass(name, output, renameOutput, watchlist, base) {
+    /**
+     * @param {String} name
+     * @param {String} file
+     * @param {String} [output]
+     * @param {String} [outputFileName]
+     * @param {String} [watchlist]
+     * @param {String} [base]
+     * @returns {*}
+     */
+    function sass(name, file, output, outputFileName, watchlist, base) {
         var gulpsass = require('gulp-sass'),
             postcss = require('gulp-postcss'),
             sourcemaps = require('gulp-sourcemaps'),
-            src = watchlist || name,
             conf = Crip.Config.get('css'),
-            options = extend({src: src}, conf.sass);
+            options = extend({src: (watchlist || file)}, conf.sass);
 
-        if (output)
-            options.output = output;
+        if (arguments.length === 1) {
+            options.src = name;
+            name = path.basename(name, '.scss');
+        } else {
+            if (output || output === '')
+                options.output = output;
 
-        if (base)
-            options.base = base;
+            if (base || base === '')
+                options.base = base;
+        }
 
         Utils.appendBase(options);
+        var compilableFile = path.join(options.base, (file || (name + '.scss')));
 
         new Crip.Task('sass', name, action, options.src);
 
         function action() {
-            var outputFile = {basename: path.basename((renameOutput || name), '.scss'), extname: '.css'};
+            if(!require('fs').existsSync(compilableFile)) {
+                console.log(('Task ' + name + ' uses non existing file ' + compilableFile).red);
+                return gulp;
+            }
+
+            var outputFile = {basename: path.basename((outputFileName || file || name), '.scss'), extname: '.css'};
 
             // compile to .css
             return compile(outputFile, conf.sass.options)
@@ -43,7 +62,7 @@ function Sass(Crip, gulp, cssHelper) {
         }
 
         function compile(outputFile, sassOptions) {
-            return gulp.src(path.join(options.base, name))
+            return gulp.src(compilableFile)
                 .pipe(gulpif(conf.sourcemaps.enabled, sourcemaps.init()))
                 .pipe(gulpsass(sassOptions).on('error', gulpsass.logError))
                 .pipe(postcss(cssHelper.processors()))

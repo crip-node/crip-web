@@ -23,13 +23,13 @@ function Styles(Crip, gulp, cssHelper) {
             options = extend({src: src}, conf),
             fileName = outputFileName ? path.basename(outputFileName, '.css') : name;
 
-        if (output)
+        if (output || output === '')
             options.output = output;
 
         if (typeof base === 'undefined' && outputFileName) {
             fileName = name;
             options.base = outputFileName;
-        } else if (base)
+        } else if (base || base === '')
             options.base = base;
 
         Utils.appendBase(options);

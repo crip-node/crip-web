@@ -32,7 +32,7 @@ function Scripts(Crip, gulp) {
                 options.base = outputFileName;
         }
         else {
-            if (output)
+            if (output || output === '')
                 options.output = output;
 
             if(typeof base === 'undefined' && typeof outputFileName !== 'boolean') {
@@ -43,7 +43,7 @@ function Scripts(Crip, gulp) {
             }
         }
 
-        if (base)
+        if (base || base === '')
             options.base = base;
 
         Utils.appendBase(options);

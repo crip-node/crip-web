@@ -15,11 +15,11 @@ function Copy(Crip, gulp) {
     function copy(name, src, output, base) {
         var options = extend({src: src}, Crip.Config.get('copy'));
 
-        if (output)
+        if (output || output === '')
             options.output = output;
 
         // watch = undefined, base = watch
-        if (base)
+        if (base || base === '')
             options.base = base;
 
         Utils.appendBase(options);
