@@ -29,19 +29,17 @@ function Scripts(Crip, gulp) {
         if (typeof output === 'boolean') {
             options.concat = output;
             if (outputFileName)
-                options.output = outputFileName;
+                options.base = outputFileName;
         }
         else {
             if (output)
                 options.output = output;
 
-            if (ofnIsBool)
+            if(typeof base === 'undefined' && typeof outputFileName !== 'boolean') {
+                options.base = outputFileName;
+                fileName = name;
+            } else if(ofnIsBool) {
                 options.concat = outputFileName;
-            else {
-                if (outputFileName && typeof base === 'undefined') {
-                    options.base = outputFileName;
-                    fileName = name;
-                }
             }
         }
 

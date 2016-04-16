@@ -122,7 +122,7 @@ Default CripWeb configuration:
  - sass: compile sass in to css and minify;
 
 
-#### crip.copy( name, src [, output , base ] )
+### crip.copy( name, src [, output , base ] )
 
 ##### name
 Type: `string`
@@ -165,12 +165,12 @@ cripweb(gulp)(function (crip) {
 });
 ```
  
-#### crip.watch( name, src , deps [, base ] )
+### crip.watch( name, src , deps [, base ] )
 
 ##### name
 Type: `string`
 
-Task name for gulp output. Will be prefixed with `copy-`.
+Task name for gulp output. Will be prefixed with `watch-`.
 
 ##### src
 Type: `string` or `array`
@@ -180,7 +180,7 @@ Glob or array of globs to read.
 ##### deps
 Type: `string` or `array`
 
-Sting or array of tasks to be executed and completed on src globs change.
+String or array of tasks to be executed and completed on src globs change.
 
 ##### base
 Type: `string`
@@ -207,24 +207,66 @@ cripweb(gulp)(function (crip) {
          .copy('src-clone', 'css/**/*', crip.config.get('copy.output') + '/css');
 });
 ```
- 
-## Examples:
-#### Compile sass
+
+### crip.scripts( name, src [, output , outputFileName , base ] )
+
+##### name
+Type: `string`
+
+Task name for gulp output. Will be prefixed with `scripts-`.
+
+##### src
+Type: `string` or `array`
+
+Glob or array of globs to read.
+
+##### output
+Type: `string`
+
+The path (output folder) to write files to.
+By default is used configuration `js.output` value (`./assets/build/js`).
+
+##### outputFileName
+Type: `string`
+
+The name of concatenated file. By default will be used `name` property without task prefix.
+
+##### base
+Type: `string`
+
+The place where patterns starting with / will be mounted onto `src` items.
+By default is used configuration `js.base` value (`./assets/src/js`).
+
 ```js
 var gulp = require('gulp'),
-    cripweb = require('cripweb')(gulp);
+    cripweb = require('cripweb');
 
-cripweb(function (crip) {
-    crip.sass('app.scss');
-});
-```
+cripweb(gulp)(function (crip) {
 
-#### Concat js
-```js
-var gulp = require('gulp'),
-    cripweb = require('cripweb')(gulp);
-
-cripweb(function (crip) {
-    crip.scripts('task-name', ['js/*.js', 'vendor/**/*.js'], 'assets/build/js', 'file-name', 'base-dir');
+    crip.scripts('build', ['components/*.js', 'index.js'], 'assets/build/js', 'app-scripts', 'assets/src/js');
+    // Will make available gulp tasks 'scripts' and 'scripts-build'
+    // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
+    //  'assets/build/js/app-scripts.js' and 'assets/build/js/app-scripts.min.js' files
+    
+    // if outputFileName is not presented, task name will bw used for new file names
+    crip.scripts('build-2', ['components/*.js', 'index.js'], 'assets/build/js', 'assets/src/js');
+    // Will make available gulp task 'scripts-build-2'
+    // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
+    //  'assets/build/js/build-2.js' and 'assets/build/js/build-2.min.js' files
+    
+    // if outputFileName is presented as boolean, it is used af flag for concatenation
+    crip.scripts('build-3', ['root.js', 'index.js'], 'assets/build/js', false, 'assets/src/js');
+    // Will make available gulp task 'scripts-build-3'
+    // Will make copy of each file and its minimized version in output folder:
+    //  - 'assets/build/js/root.js' and 'assets/build/js/root.min.js'
+    //  - 'assets/build/js/index.js' and 'assets/build/js/index.min.js'
+    
+    // if you already configured your scripts output and you no need to concatenate, use output as concatenate flag
+    crip.config.set('js', {output: 'assets/build/js', uglify: {enabled: false}})
+        .scripts('build-4', ['root.js', 'index.js'], false, 'assets/src/js');
+        // Will make available gulp task 'scripts-build-4'
+        // Will make copy of each file in configured output folder:
+        //  - 'assets/build/js/root.js'
+        //  - 'assets/build/js/index.js'
 });
 ```
