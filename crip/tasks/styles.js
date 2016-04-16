@@ -8,6 +8,14 @@ var extend = require('extend'),
 function Styles(Crip, gulp, cssHelper) {
     Crip.extend('styles', styles);
 
+    /**
+     * @param {String} name
+     * @param {String|Array} src
+     * @param {String} [output]
+     * @param {String} [outputFileName]
+     * @param {String} [base]
+     * @returns {*}
+     */
     function styles(name, src, output, outputFileName, base) {
         var postcss = require('gulp-postcss'),
             sourcemaps = require('gulp-sourcemaps'),
@@ -18,7 +26,10 @@ function Styles(Crip, gulp, cssHelper) {
         if (output)
             options.output = output;
 
-        if (base)
+        if (typeof base === 'undefined' && outputFileName) {
+            fileName = name;
+            options.base = outputFileName;
+        } else if (base)
             options.base = base;
 
         Utils.appendBase(options);

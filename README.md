@@ -199,7 +199,6 @@ gulp.task('task-name', function(){
 cripweb(gulp)(function (crip) {
     
     crip.watch('styles', 'css/**/*', ['copy-src-clone', 'task-name'], 'assets/src');
-    
     // Will make available gulp task 'watch-styles'
     // Will start gulp tasks 'copy-src-clone' and 'task-name' when src globs changes
     
@@ -248,25 +247,81 @@ cripweb(gulp)(function (crip) {
     // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
     //  'assets/build/js/app-scripts.js' and 'assets/build/js/app-scripts.min.js' files
     
-    // if outputFileName is not presented, task name will bw used for new file names
+    // If outputFileName is not presented, task name will be used for new file names:
+    
     crip.scripts('build-2', ['components/*.js', 'index.js'], 'assets/build/js', 'assets/src/js');
     // Will make available gulp task 'scripts-build-2'
     // Will concatenate and copy files 'assets/src/js/index.js' and 'assets/src/js/components/*.js' to 
     //  'assets/build/js/build-2.js' and 'assets/build/js/build-2.min.js' files
     
-    // if outputFileName is presented as boolean, it is used af flag for concatenation
+    // If outputFileName is presented as boolean, it is used af flag for concatenation:
+    
     crip.scripts('build-3', ['root.js', 'index.js'], 'assets/build/js', false, 'assets/src/js');
     // Will make available gulp task 'scripts-build-3'
-    // Will make copy of each file and its minimized version in output folder:
-    //  - 'assets/build/js/root.js' and 'assets/build/js/root.min.js'
-    //  - 'assets/build/js/index.js' and 'assets/build/js/index.min.js'
+    // Will make copy of 'assets/src/js/root.js' and 'assets/src/js/index.js' files and its 
+    //  minimized version in output folder:
+    //    - 'assets/build/js/root.js' and 'assets/build/js/root.min.js'
+    //    - 'assets/build/js/index.js' and 'assets/build/js/index.min.js'
     
-    // if you already configured your scripts output and you no need to concatenate, use output as concatenate flag
+    // If you already configured your scripts output and you no need to concatenate, 
+    //  use output as concatenate flag:
+    
     crip.config.set('js', {output: 'assets/build/js', uglify: {enabled: false}})
         .scripts('build-4', ['root.js', 'index.js'], false, 'assets/src/js');
         // Will make available gulp task 'scripts-build-4'
-        // Will make copy of each file in configured output folder:
+        // Will make copy of 'assets/src/js/root.js' and 'assets/src/js/index.js' in configured output folder:
         //  - 'assets/build/js/root.js'
         //  - 'assets/build/js/index.js'
+        // If concatenate is disabled, crip automatically disables sourcemaps.
+});
+```
+ 
+### crip.styles( name, src , [ output , outputFileName , base ] )
+
+##### name
+Type: `string`
+
+Task name for gulp output. Will be prefixed with `styles-`.
+
+##### src
+Type: `string` or `array`
+
+Glob or array of globs to read.
+
+##### output
+Type: `string`
+
+The path (output folder) to write files to.
+By default is used configuration `css.output` value (`./assets/build/css`).
+
+##### outputFileName
+Type: `string`
+
+The name of the new file. By default will be used `name` property without task prefix.
+
+##### base
+Type: `string`
+
+The place where patterns starting with / will be mounted onto `src` items.
+By default is used configuration `css.base` value (`./assets/src/css`).
+
+```js
+var gulp = require('gulp'),
+    cripweb = require('cripweb');
+
+cripweb(gulp)(function (crip) {
+    
+    crip.styles('app', ['index.css', '**/*.css'], 'assets/build', 'app-styles', 'assets/src/css');
+    // Will make available gulp tasks 'styles' and 'styles-app'
+    // Will concatenate and copy files 'assets/src/css/index.css' and 'assets/src/css/**/*.css' to 
+    //  'assets/build/app-styles.css' and 'ssets/build/app-styles.min.css' files
+    
+    // If outputFileName is not presented, task name will be used for new file names:
+    
+    crip.styles('app-2', ['index.css', '**/*.css'], 'assets/build', 'assets/src/css');
+    // Will make available gulp task 'styles-app-2'
+    // Will concatenate and copy files 'assets/src/css/index.css' and 'assets/src/css/**/*.css' to 
+    //  'assets/build/app-2.css' and 'ssets/build/app-2.min.css' files
+    
 });
 ```
