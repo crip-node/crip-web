@@ -78,9 +78,7 @@ function createGulpTask(Crip, task) {
 function createGulpDefaultTasks() {
     var self = this;
     this.gulp.task('default', function () {
-        'use strict';
         self.Task.runAll();
-        self.gulp.start('watch');
     });
 
     this.gulp.task('watch', function () {

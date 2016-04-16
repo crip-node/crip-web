@@ -1,7 +1,7 @@
 {
   "name": "cripweb",
   "version": "2.0.0",
-  "description": "Fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
+  "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,16 +11,19 @@
     "url": "git://github.com/crip-node/crip-web.git"
   },
   "keywords": [
-    "extend",
-    "gulp-concat",
+    "crip",
+    "gulp api",
+    "autoprefixer",
+    "cssnano",
+    "gulp",
     "concat",
-    "minify-css",
+    "postcss",
+    "rename",
     "sass",
-    "gulp-sass",
     "sourcemaps",
-    "uglifyjs",
-    "gulp-watch",
-    "watch"
+    "uglify",
+    "watch",
+    "pixrem"
   ],
   "author": {
     "name": "Igors Krasjukovs",
@@ -47,7 +50,7 @@
     "path": "^0.11",
     "pixrem": "^3.0.0"
   },
-  "readme": "# cripweb\r\nFluent API for Gulp\r\n",
+  "readme": "# cripweb \r\n Crip fluent API for Gulp\r\n",
   "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/crip-node/crip-web/issues"

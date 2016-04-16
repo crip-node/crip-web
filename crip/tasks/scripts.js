@@ -20,11 +20,14 @@ function Scripts(Crip, gulp) {
      * @returns {*}
      */
     function scripts(name, src, output, outputFileName, base) {
-        var ofnIsBool = typeof outputFileName === 'boolean',
+        var oIsBool = typeof output === 'boolean',
+            ofnIsBool = typeof outputFileName === 'boolean',
             sourcemaps = require('gulp-sourcemaps'),
             conf = Crip.Config.get('js'),
             options = extend({src: src, concat: true}, conf),
-            fileName = (!ofnIsBool && outputFileName) ? path.basename(outputFileName, '.js') : name;
+            fileName = (!ofnIsBool && !oIsBool && outputFileName) ? 
+                path.basename(outputFileName, '.js') : 
+                name;
 
         if (typeof output === 'boolean') {
             options.concat = output;
