@@ -1,4 +1,4 @@
-# CripWeb 2
+# CripWeb 3
 Crip fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
