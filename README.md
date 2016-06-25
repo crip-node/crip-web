@@ -1,4 +1,4 @@
-# CripWeb 2
+# CripWeb 3
 Crip fluent API for Gulp
 
 [![NPM](https://nodei.co/npm/cripweb.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cripweb/)
@@ -115,11 +115,11 @@ Default CripWeb configuration:
 ```
 
 ## Crip exports tasks:
- - copy: copy files;
- - watch: watch file changes and run tasks on change;
- - scripts: concat, uglify and copy javascript files; (TODO: add jshint validation) 
- - styles: concat and minify stylesheets; (TODO: fix pixrem)
- - sass: compile sass in to css and minify;
+ - [copy](https://github.com/crip-node/crip-web/wiki/Task-crip.copy): copy files;
+ - [watch](https://github.com/crip-node/crip-web/wiki/Task-crip.watch): watch file changes and run tasks on change;
+ - [scripts](https://github.com/crip-node/crip-web/wiki/Task-crip.scripts): concat, uglify and copy javascript files; (TODO: add jshint validation)
+ - [styles](https://github.com/crip-node/crip-web/wiki/Task-crip.styles): concat and minify stylesheets; (TODO: fix pixrem)
+ - [sass](https://github.com/crip-node/crip-web/wiki/Task-crip.sass): compile sass in to css and minify;
 
 
 ### crip.copy( name, src [, output , base ] )
