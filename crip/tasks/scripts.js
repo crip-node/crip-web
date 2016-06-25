@@ -38,7 +38,7 @@ function Scripts(Crip, gulp) {
             if (output || output === '')
                 options.output = output;
 
-            if(typeof base === 'undefined' && typeof outputFileName !== 'boolean') {
+            if(typeof base === 'undefined' typeof outputFileName !== 'undefined' && && typeof outputFileName !== 'boolean') {
                 options.base = outputFileName;
                 fileName = name;
             } else if(ofnIsBool) {
