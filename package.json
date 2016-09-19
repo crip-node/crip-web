@@ -1,6 +1,6 @@
 {
   "name": "cripweb",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "index.js",
   "scripts": {
