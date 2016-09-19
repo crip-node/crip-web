@@ -2,9 +2,10 @@ var Utils = {
         where: where,
         contains: contains,
         forEach: forEach,
-        appendBase: appendBase
-    },
-    path = require('path');
+        appendBase: appendBase,
+        supplant: supplant
+    };
+var path = require('path');
 
 module.exports = Utils;
 
@@ -33,10 +34,10 @@ function where(arr, searchParam) {
 }
 
 /**
- * Determine array has value
+ * Determine object/array has value
  *
- * @param arr
- * @param val
+ * @param {Array|Object} arr
+ * @param {any} val
  * @returns {boolean}
  */
 function contains(arr, val) {
@@ -61,15 +62,44 @@ function forEach(obj, callback) {
     }
 }
 
+/**
+ * Append base path for globs
+ * 
+ * @param {any} options
+ * @returns
+ */
 function appendBase(options) {
     if (!options.src || !options.base)
         return;
 
     if (typeof options.src === 'object') {
+        // treat as array or object
         Utils.forEach(options.src, function (dir, key) {
             options.src[key] = path.join(options.base, dir);
         })
     } else {
+        //treat as a string
         options.src = path.join(options.base, options.src);
     }
 }
+
+/**
+ * supplant() does variable substitution on the string. It scans through the string looking for 
+ * expressions enclosed in { } braces. If an expression is found, use it as a key on the object, 
+ * and if the key has a string value or number value, it is substituted for the bracket expression 
+ * and it repeats.
+ * 
+ * @param {String} tmpl
+ * @param {Object} o
+ * 
+ * @returns {String}
+ */
+function supplant (tmpl, o) {
+	return tmpl.replace(
+		/{([^{}]*)}/g, 
+		function (a, b) {
+			var r = o[b];
+			return typeof r === 'string' || typeof r === 'number' ? r : a;
+		}
+	);
+};

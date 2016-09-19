@@ -3,30 +3,106 @@ var Utils = require('./Utils'),
     batch = require('gulp-batch'),
     colors = require('colors');
 
+/**
+ * Placeholder for incomming crip variable
+ */
 var Crip;
 
+/**
+ * Crip Task class instance
+ * 
+ * @class
+ * @param {String} section
+ * @param {String} name
+ * @param {?Function} fn
+ * @param {?Array} globs
+ */
 var Task = function (section, name, fn, globs) {
-    this.section = section;
-    this.name = name;
-    this.id = section + '-' + name;
+    var self = this;
+
+    self.globs = false;
+    self.section = section;
+    self.name = name;
+    self.id = Utils.supplant("{section}-{name}", this);
+
+    self.isWatchTask = isWatchTask;
+    self.run = run;
 
     if (globs)
-        this.watch(globs);
+        self.globs = globs;
 
     if (fn)
-        this.describe(fn);
+        describe(fn);
+
+    /**
+     * Register task in Crip.tasks Array
+     */
+    function register() {
+        var section = self.section,
+            name = self.name;
+
+        if (!Crip.tasks[section])
+            Crip.tasks[section] = [];
+
+        if (Crip.tasks[section][name])
+            throw new Error(Utils.supplant("Multiple tasks with same name has been registered. Section: {section}; Name: {name}"
+                , { section: section, name: name }));
+
+        Crip.tasks[section][name] = self;
+
+        Crip.activeTasks[self.id] = 0;
+    }
+
+    /**
+     * Describe task and register it
+     *
+     * @param {function} fn
+     * @returns {Task}
+     */
+    function describe(fn) {
+        self.fn = fn;
+
+        register();
+
+        return self;
+    }
+
+    /**
+     * Exec task definition
+     *
+     * @returns {*}
+     */
+    function run() {
+        // run only if it is not started yet
+        if (Crip.activeTasks[self.id] && Crip.activeTasks[self.id] === 0) {
+            Crip.activeTasks[self.id]++;
+
+            log('CRIP start', self.id, ' ...');
+            var curr = new Date();
+            return self.fn()
+                .on('finish', function () {
+                    log('CRIP done ',
+                        self.id,
+                        ' after ' + ((new Date() - curr) + ' ms').magenta);
+                    Crip.activeTasks[self.id]--;
+                });
+        }
+    }
+
+    /**
+     * Determines is the task from 'watch' section.
+     * 
+     * @returns {Boolean}
+     */
+    function isWatchTask() {
+        return self.section === 'watch';
+    }
 };
 
+// Registering globally available Task methods
 Task.find = find;
 Task.runAll = runAll;
 Task.watchAll = watchAll;
-
-Task.prototype = {
-    describe: describe,
-    register: register,
-    watch: watchGlobs,
-    run: run
-};
 
 /**
  * Find a task by section and its name
@@ -45,81 +121,31 @@ function find(section, name) {
 }
 
 /**
- * Describe task and register it
- *
- * @param {function} fn
- * @returns {Task}
- */
-function describe(fn) {
-    this.fn = fn;
-
-    this.register();
-
-    return this;
-}
-
-/**
- * Register task
- */
-function register() {
-    if (!Crip.tasks[this.section])
-        Crip.tasks[this.section] = [];
-
-    Crip.tasks[this.section][this.name] = this;
-
-    Crip.activeTasks[this.id] = 0;
-}
-
-/**
- * Exec task definition
- *
- * @returns {*}
- */
-function run() {
-    var self = this;
-    if (Crip.activeTasks[self.id] === 0) {
-        Crip.activeTasks[self.id]++;
-        log('CRIP start', self.id, ' ...');
-        var curr = new Date();
-        return self.fn()
-            .on('finish', function () {
-                log('CRIP done ',
-                    self.id,
-                    ' after ' + ((new Date() - curr) + ' ms').magenta);
-                Crip.activeTasks[self.id]--;
-            });
-    }
-}
-
-function log(type, event, post) {
-    if (Crip.Config.get('log'))
-        console.log(timestamp() + (' ' + type + ' ').magenta + '\'' + event.cyan + '\'' + (post ? post : ''));
-}
-
-function timestamp() {
-    return '[' + ((new Date).toTimeString()).substr(0, 8).grey + ']';
-}
-
-function watchGlobs(globs) {
-    this.globs = globs;
-
-}
-
-/**
- * Run all registered tasks
+ * Run all registered tasks. (except watch section)
  */
 function runAll() {
     _loopAllTasks(function (task) {
-        task.run();
+        if (!task.isWatchTask())
+            task.run();
     });
 }
 
 /**
- * watch all registered task
+ * Run all registered watch tasks
+ */
+function runAllWatchTasks() {
+    _loopAllTasks(function (task) {
+        // run tasks registered in watch
+        if (task.section === 'watch' && task.name !== 'watch')
+            task.run();
+    });
+}
+
+/**
+ * Watch all registered globs and run task on change
  */
 function watchAll() {
     _loopAllTasks(function (task) {
-        'use strict';
         if (task.globs) {
             watch(task.globs, batch(function () {
                 return task.run();
@@ -128,14 +154,46 @@ function watchAll() {
     });
 }
 
-function _loopAllTasks(callback) {
+/**
+ * Log custom event to console if configuration allows
+ * 
+ * @param {String} type
+ * @param {String} event
+ * @param {?String} post
+ */
+function log(type, event, post) {
+    if (Crip.Config.get('log'))
+        console.log(timestamp() + (' ' + type + ' ').magenta + ('\'' + event + '\'').cyan + (post ? post : '').magenta);
+
+    /**
+     * Get Current tymestamp formatted String
+     * 
+     * @returns {String}
+     */
+    function timestamp() {
+        return ('[' + ((new Date).toTimeString()).substr(0, 8) + ']').grey;
+    }
+}
+
+/**
+ * Loop all task registered in Crip.tasks Array
+ * 
+ * @param {any} cb - The callback to handle task
+ */
+function _loopAllTasks(cb) {
     Utils.forEach(Crip.tasks, function (section, sectionName) {
         Utils.forEach(section, function (task, name) {
-            callback(task, name, sectionName);
+            cb(task, name, sectionName);
         });
     });
 }
 
+/**
+ * Export module
+ * 
+ * @param {Crip} crip
+ * @returns {Task}
+ */
 module.exports = function (crip) {
     // Make Crip available throughout this file.
     Crip = crip;

@@ -1,6 +1,11 @@
 var extend = require('extend'),
     Utils = require('./../Utils.js');
-
+/**
+ * 
+ * 
+ * @param {Crip} Crip
+ * @param {any} gulp
+ */
 function Copy(Crip, gulp) {
     Crip.extend('copy', copy);
 

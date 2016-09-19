@@ -1,20 +1,18 @@
 var extend = require('extend'),
-    watch = require('gulp-watch'),
     Utils = require('./crip/Utils');
 
 function Crip(gulp, config) {
     var scope = this;
 
-    this.gulp = gulp;
-    this.Task = require('./crip/Task')(scope);
-    this.Config = require('./crip/Config')(scope, config);
-    this.extend = _extend;
-    this.activeTasks = {};
-    this.tasks = {};
-    this.core = {
+    scope.gulp = gulp;
+    scope.Task = require('./crip/Task')(scope);
+    scope.Config = require('./crip/Config')(scope, config);
+    scope.extend = _extend;
+    scope.activeTasks = {};
+    scope.tasks = {};
+    scope.core = {
         config: scope.Config
     };
-
 
     // initialise all tasks
     require('./crip/tasks/copy.js')(scope, gulp);
@@ -50,7 +48,7 @@ var createGulpTasks = function () {
 };
 
 /**
- * Crate task for each task
+ * Crate gulp-task for each task registered in crip
  *
  * @param {Crip} Crip
  * @param {gulp} Crip.gulp
@@ -82,6 +80,10 @@ function createGulpDefaultTasks() {
     });
 
     this.gulp.task('watch', function () {
+        self.Task.runAllWatchTasks();
+    });
+
+    this.gulp.task('watch-all-globs', function () {
         self.Task.watchAll();
     });
 }
