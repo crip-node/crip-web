@@ -1,5 +1,5 @@
 var Utils = {
-        where: where,
+        /*where: where,*/
         contains: contains,
         forEach: forEach,
         appendBase: appendBase,
@@ -15,11 +15,12 @@ module.exports = Utils;
  * @param {Array} arr
  * @param {Array} searchParam
  * @returns {Array}
- */
+
 function where(arr, searchParam) {
-    var result = [],
-        paramsMatch = [];
+    var result = [];
+        
     forEach(arr, function (arrVal, i) {
+        var paramsMatch = [];
         forEach(searchParam, function (paramVal, j) {
             if (arrVal.hasOwnProperty(j) && paramVal === arrVal[j])
                 paramsMatch.push(true);
@@ -27,11 +28,10 @@ function where(arr, searchParam) {
 
         if (paramsMatch.length === searchParam.length)
             result.push(arrVal);
-        paramsMatch = [];
     });
 
     return result;
-}
+} */
 
 /**
  * Determine object/array has value
@@ -41,12 +41,13 @@ function where(arr, searchParam) {
  * @returns {boolean}
  */
 function contains(arr, val) {
+    var result = false;
     forEach(arr, function (arrVal) {
         if (arrVal === val)
-            return true;
+            result = true;
     });
 
-    return false;
+    return result;
 }
 
 /**
@@ -72,15 +73,15 @@ function appendBase(options) {
     if (!options.src || !options.base)
         return;
 
+    var trimRegex = /^\\+|\\+$/g;
     if (typeof options.src === 'object') {
         // treat as array or object
-        Utils.forEach(options.src, function (dir, key) {
-            options.src[key] = path.join(options.base, dir);
+        forEach(options.src, function (dir, key) {
+            options.src[key] = path.join(options.base, dir).replace(trimRegex, '');
         })
-    } else {
+    } else
         //treat as a string
-        options.src = path.join(options.base, options.src);
-    }
+        options.src = path.join(options.base, options.src).replace(trimRegex, '')
 }
 
 /**

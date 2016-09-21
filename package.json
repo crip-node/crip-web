@@ -4,7 +4,7 @@
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests --recursive --watch"
   },
   "repository": {
     "type": "git",
@@ -55,5 +55,8 @@
   "bugs": {
     "url": "https://github.com/crip-node/crip-web/issues"
   },
-  "homepage": "https://github.com/crip-node/crip-web#readme"
+  "homepage": "https://github.com/crip-node/crip-web#readme",
+  "devDependencies": {
+    "chai": "^3.5"
+  }
 }
