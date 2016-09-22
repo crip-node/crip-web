@@ -1,37 +1,16 @@
+var colors = require('colors');
+
 var Utils = {
-        /*where: where,*/
-        contains: contains,
-        forEach: forEach,
-        appendBase: appendBase,
-        supplant: supplant
-    };
+    /*where: where,*/
+    contains: contains,
+    forEach: forEach,
+    appendBase: appendBase,
+    supplant: supplant,
+    log: log
+};
 var path = require('path');
 
 module.exports = Utils;
-
-/**
- * Get items witch have same search params
- *
- * @param {Array} arr
- * @param {Array} searchParam
- * @returns {Array}
-
-function where(arr, searchParam) {
-    var result = [];
-        
-    forEach(arr, function (arrVal, i) {
-        var paramsMatch = [];
-        forEach(searchParam, function (paramVal, j) {
-            if (arrVal.hasOwnProperty(j) && paramVal === arrVal[j])
-                paramsMatch.push(true);
-        });
-
-        if (paramsMatch.length === searchParam.length)
-            result.push(arrVal);
-    });
-
-    return result;
-} */
 
 /**
  * Determine object/array has value
@@ -95,12 +74,34 @@ function appendBase(options) {
  * 
  * @returns {String}
  */
-function supplant (tmpl, o) {
-	return tmpl.replace(
-		/{([^{}]*)}/g, 
-		function (a, b) {
-			var r = o[b];
-			return typeof r === 'string' || typeof r === 'number' ? r : a;
-		}
-	);
+function supplant(tmpl, o) {
+    return tmpl.replace(
+        /{([^{}]*)}/g,
+        function (a, b) {
+            var r = o[b];
+            return typeof r === 'string' || typeof r === 'number' ? r : a;
+        }
+    );
 };
+
+/**
+ * Log custom event to console
+ * 
+ * @param {String} type
+ * @param {String} event
+ * @param {?String} append
+ */
+function log(type, event, append) {
+    var text = timestamp() + (' ' + type + ' ').magenta + ('\'' + event + '\'').cyan + (append ? ' ' + append : '').magenta;
+    console.log(text);
+
+    return text;
+    /**
+     * Get Current tymestamp formatted String
+     * 
+     * @returns {String}
+     */
+    function timestamp() {
+        return ('[' + ((new Date).toTimeString()).substr(0, 8) + ']').grey;
+    }
+}
