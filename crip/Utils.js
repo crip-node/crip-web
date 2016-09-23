@@ -92,7 +92,7 @@ function supplant(tmpl, o) {
  * @param {?String} append
  */
 function log(type, event, append) {
-    var text = timestamp() + (' ' + type + ' ').magenta + ('\'' + event + '\'').cyan + (append ? ' ' + append : '').magenta;
+    var text = timestamp() + (' ' + type + ' ').magenta + ('\'' + event + '\'').cyan + (append ? (' ' + append) : '').magenta;
     console.log(text);
 
     return text;

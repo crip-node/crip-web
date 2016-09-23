@@ -45,6 +45,8 @@
   },
   "homepage": "https://github.com/crip-node/crip-web#readme",
   "devDependencies": {
-    "chai": "^3.5"
+    "chai": "^3.5",
+    "sinon": "^1.17",
+    "sinon-chai": "^2.8.0"
   }
 }

@@ -21,11 +21,11 @@ Task.prototype.run = function (taskStack) {
     if (taskStack[id] == 0) {
         taskStack[id]++;
 
-        Utils.log('Starting crip ', id, '...');
+        Utils.log('Starting crip', id, '...');
         var currTime = new Date();
         return this._fn()
             .on('finish', function () {
-                Utils.log('Completed crip', id, 'after' + (new Date() - curr) + ' ms');
+                Utils.log('Complete crip', id, 'after ' + (new Date() - currTime) + ' ms');
                 taskStack[id]--;
             })
     }
