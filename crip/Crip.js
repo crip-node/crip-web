@@ -1,22 +1,41 @@
 var Utils = require('./Utils');
-var CripMethods = require('./CripMethods');
+var Methods = require('./Methods');
 var Copy = require('./tasks/Copy');
 var Task = require('./Task');
 var watch = require('gulp-watch');
 
+/**
+ * 
+ * 
+ * @param {any} gulp
+ * @param {any} config
+ */
 function Crip(gulp, config) {
     this._gulp = gulp;
     this._tasks = {};
     this._conf = config;
-    this._methods = new CripMethods(config);
+    this._methods = new Methods(config);
 
     this.defineDefaultMethods();
 }
 
+/**
+ * 
+ * 
+ * @returns
+ */
 Crip.prototype.getPublicMethods = function () {
     return this._methods;
 }
 
+/**
+ * 
+ * 
+ * @param {any} method
+ * @param {any} name
+ * @param {any} gulpFn
+ * @param {any} globs
+ */
 Crip.prototype.addTask = function (method, name, gulpFn, globs) {
     if (!this._tasks[method])
         this._tasks[method] = {};
@@ -29,10 +48,16 @@ Crip.prototype.addTask = function (method, name, gulpFn, globs) {
     this._tasks[method][name] = new Task(method, name, gulpFn, globs);
 }
 
+/**
+ * 
+ */
 Crip.prototype.defineDefaultMethods = function () {
     this._methods.define('copy', new Copy(this._gulp, this._conf, this, this.addTask));
 }
 
+/**
+ * 
+ */
 Crip.prototype.defineRegisteredTasksInGulp = function () {
     var self = this;
 
@@ -67,6 +92,13 @@ Crip.prototype.defineTaskInGulp = function (task) {
     });
 }
 
+/**
+ * 
+ * 
+ * @param {any} section
+ * @param {any} name
+ * @returns
+ */
 Crip.prototype.findTasks = function (section, name) {
     if (!name)
         return this._tasks[section];
@@ -74,6 +106,9 @@ Crip.prototype.findTasks = function (section, name) {
     return [this._tasks[section][name]];
 }
 
+/**
+ * 
+ */
 Crip.prototype.defineDefaultTasksInGulp = function () {
     var self = this;
 
@@ -96,6 +131,11 @@ Crip.prototype.defineDefaultTasksInGulp = function () {
     });
 }
 
+/**
+ * 
+ * 
+ * @param {any} cb
+ */
 Crip.prototype._loopTasks = function (cb) {
     var self = this;
     Utils.forEach(self._tasks, function (section, sectionName) {
