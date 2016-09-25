@@ -17,6 +17,12 @@ function Config(defaults) {
     this.log = true;
 }
 
+/**
+ * Set configuration value to object
+ * 
+ * @param {String} pathToSet Path to set value separated by dot
+ * @param {*} options value to set
+ */
 Config.prototype.set = function (pathToSet, options) {
     if (typeof options == 'undefined') {
         options = pathToSet;
@@ -45,6 +51,13 @@ Config.prototype.set = function (pathToSet, options) {
     extend(true, target, options);
 }
 
+/**
+ * Get path from configuration
+ * 
+ * @param {String} pathToConfig Path to get value separated by dot
+ * @param {boolean?} skipLast Skip last property to get reference of it parent
+ * @returns {*} Configuration value
+ */
 Config.prototype.get = function (pathToConfig, skipLast) {
     var self = this;
     var temp = this;
@@ -73,6 +86,12 @@ Config.prototype.get = function (pathToConfig, skipLast) {
     return temp;
 }
 
+/**
+ * Read json file;
+ * 
+ * @param {String} pathToFile - Path to the file
+ * @returns {Object} Json file content
+ */
 Config.prototype._readFromFile = function (pathToFile) {
     if (fs.existsSync(pathToFile))
         return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
