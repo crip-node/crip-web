@@ -92,35 +92,4 @@ describe('Config', function () {
 
         expect(config).to.have.property('test1', 'test-1-value');
     })
-
-    /*before(function() {
-           if (!fs.existsSync(".test_files")) {
-               fs.mkdirSync(".test_files");
-               fs.writeFileSync(".test_files/a", "");
-               fs.writeFileSync(".test_files/b", "");
-               fs.mkdirSync(".test_files/dir");
-               fs.writeFileSync(".test_files/dir/c", "");
-               fs.mkdirSync(".test_files/dir2");
-               fs.writeFileSync(".test_files/dir2/d", "");
-           }
-       });
- 
-       after(function() {
-           fs.unlinkSync(".test_files/dir/c");
-           fs.rmdirSync(".test_files/dir");
-           fs.unlinkSync(".test_files/dir2/d");
-           fs.rmdirSync(".test_files/dir2");
-           fs.unlinkSync(".test_files/a");
-           fs.unlinkSync(".test_files/b");
-           fs.rmdirSync(".test_files");
-       });
-
-    it('define() should rise error if method definition is not set', function () {
-        var methods = new Methods('config instance');
-        var delegate = function() {
-            methods.define('test', {});
-        }
-
-        expect(delegate).to.throw(Error);
-    })*/
 })

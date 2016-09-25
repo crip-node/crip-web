@@ -2,10 +2,7 @@ var extend = require('extend');
 var Utils = require('./../Utils.js');
 
 
-function Copy(gulp, config, methods, newTaskCb) {
-    this.fn = function () {
-    }
-}
+function Copy(gulp, config, methods, newTaskCb) { }
 
 /**
  * Copy globs to output path
