@@ -1,175 +1,84 @@
-var path = require('path'),
-    Utils = require('./Utils.js'),
-    colors = require('colors'),
-    fs = require('fs'),
-    extend = require('extend');
+var path = require('path');
+var fs = require('fs');
+var extend = require('extend');
 
-function Config(Crip, defaults) {
-    var self = this;
-    this.get = get;
-    this.set = set;
-    this.assets = './assets/src';
-    this.output = './assets/build';
+var crip = require('./crip');
 
-    // enable CRIP logs in console
-    this.log = true;
-
-    // copy gulp.src options object. Supports:
-    // https://github.com/isaacs/node-glob#options
-    // output - copy output location
-    this.copy = {
-        base: '',
-        output: path.join(self.output)
-    };
-
-    this.watch = {
-        base: ''
-    };
-
-    this.css = {
-        base: path.join(self.assets, 'css'),
-        output: path.join(self.output, 'css'),
-        // create .min.css file
-        minify: true,
-        // writes autoprefixes for css
-        autoprefix: {
-            enabled: true,
-            options: {
-                browsers: ['last 8 version', 'ie >= 8'],
-                cascade: false
-            }
-        },
-        // writes sourcemaps
-        sourcemaps: {
-            enabled: true,
-            options: {}
-        },
-        // it does not work...
-        pixrem: {
-            enabled: false,
-            options: {
-                rootValue: 16,
-                replace: false,
-                atrules: false,
-                html: true,
-                browsers: 'ie >= 8',
-                unitPrecision: 3
-            }
-        },
-        // used to minify styles task result
-        cssnano: {
-            // enabled when styles task min version compiles
-            options: {
-                discardComments: {
-                    removeAll: true
-                }
-            }
-        },
-        sass: {
-            base: path.join(self.assets, 'sass'),
-            output: path.join(self.output, 'css'),
-            // https://github.com/sass/node-sass#options
-            options: {
-                outputStyle: 'nested',
-                precision: 10
-            }
-        }
-    };
-
-    this.js = {
-        base: path.join(self.assets, 'js'),
-        output: path.join(self.output, 'js'),
-        uglify: {
-            enabled: true,
-            options: {}
-        },
-        sourcemaps: {
-            enabled: true,
-            options: {}
-        }
-    };
+function Config(defaults) {
 
     if (defaults)
         this.set(defaults);
 
-    /**
-     * Fetch a config item, using a string dot-notation.
-     *
-     * @param  {String} configPath
-     * @param {Boolean} [getParent]
-     * @return {string}
-     */
-    function get(configPath, getParent) {
-        var current = self,
-            segments = configPath.split('.');
+    this.assets = this.assets || 'assets';
+    this.assetsSrc = this.assetsSrc || '{assets}\\src';
+    this.assetsDist = this.assetsDist || '{assets}\\dist';
 
-        if (getParent)
-            segments = segments.slice(0, -1);
+    // enable CRIP logs in console
+    this.log = true;
+}
 
-        if (segments[0] === '')
-            segments = segments.slice(1);
+Config.prototype.set = function (pathToSet, options) {
+    if (typeof options == 'undefined') {
+        options = pathToSet;
+        pathToSet = null;
 
-        Utils.forEach(segments, function (segment) {
-            current = current[segment];
-        });
-
-        return current;
+        if (typeof options == 'string')
+            options = this._readFromFile(options);
     }
 
-    /**
-     *
-     * Set a config section object, using a string dot-notation.
-     *
-     * @param {String|Object} configPath|value
-     * @param {Object} [value]
-     *
-     * @returns {Object}
-     */
-    function set(configPath, value) {
-        if (typeof configPath === 'undefined' && typeof value === 'undefined') {
-            console.log('Undefined configuration change parameters'.red);
-            return Crip.core;
-        }
+    var target = this;
 
-        var configPathToSet = arguments[0],
-            valueToSet = arguments[1];
+    if (pathToSet) {
+        var segments = pathToSet.split('.');
+        var key = segments[segments.length - 1];
+        target = this.get(pathToSet, true);
+        if (crip.isUndefined(target[key]))
+            target[key] = {};
 
-        if (typeof arguments[1] === 'undefined') {
-            valueToSet = arguments[0];
-            configPathToSet = '';
-
-            if (typeof valueToSet === 'string')
-                valueToSet = readConfig(valueToSet);
-        }
-
-        var isPrimitive = typeof valueToSet !== 'object',
-            obj = get(configPathToSet, isPrimitive),
-            lastKey = configPathToSet.split('.').slice(-1)[0];
-
-        if (isPrimitive && typeof obj[lastKey] === typeof valueToSet)
-            obj[lastKey] = valueToSet;
+        if (crip.isObject(options))
+            extend(true, target[key], options);
         else
-        // if we overwrite with object, we can do it using js references
-            extend(true, get(configPathToSet), valueToSet);
-
-        // allow chain after configuration update
-        return Crip.core;
+            target[key] = options;
+        return;
     }
 
+    extend(true, target, options);
+}
 
-    /**
-     * Extend config from file
-     *
-     * @param {String} file Config file location
-     */
-    function readConfig(file) {
-        if (fs.existsSync(file)) {
-            return JSON.parse(fs.readFileSync(file, 'utf8'));
-        }
+Config.prototype.get = function (pathToConfig, skipLast) {
+    var self = this;
+    var temp = this;
+    var segments = pathToConfig.split('.');
+
+    if (skipLast)
+        segments = segments.slice(0, -1);
+
+    crip.forEach(segments, function (segment) {
+        if (typeof temp[segment] === 'undefined')
+            temp[segment] = {};
+
+        temp = temp[segment];
+    });
+
+    if (crip.isString(temp) && temp.indexOf('{') > -1) {
+        return temp.replace(
+            /{([^{}]*)}/g,
+            function (a, b) {
+                var r = self.get(b);
+                return crip.isString(r) || crip.isNumber(r) ? r : a;
+            }
+        );
     }
+
+    return temp;
+}
+
+Config.prototype._readFromFile = function (pathToFile) {
+    if (fs.existsSync(pathToFile))
+        return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
+
+    return pathToFile;
 }
 
 
-module.exports = function (Crip, defaults) {
-    return new Config(Crip, defaults);
-};
+module.exports = Config;

@@ -1,148 +1,171 @@
-var Utils = require('./Utils');
-var Methods = require('./Methods');
-var Copy = require('./tasks/Copy');
-var Task = require('./Task');
-var watch = require('gulp-watch');
+var fs = require('fs');
+var path = require('path')
 
-/**
- * 
- * 
- * @param {any} gulp
- * @param {any} config
- */
-function Crip(gulp, config) {
-    this._gulp = gulp;
-    this._tasks = {};
-    this._conf = config;
-    this._methods = new Methods(config);
+var crip = {
 
-    this.defineDefaultMethods();
-}
+    /**
+     * A function that performs no operations. This function can be useful when writing code in the
+     * functional style.
+      ```js
+        function foo(callback) {
+            var result = calculateResult();
+            (callback || crip.noop)(result);
+        }
+      ```
+     */
+    noop: function () { return arguments; },
 
-/**
- * 
- * 
- * @returns
- */
-Crip.prototype.getPublicMethods = function () {
-    return this._methods;
-}
+    /**
+     * Determines if a reference is defined.
+     * 
+     * @param {*} value Reference to check.
+     * @returns {boolean} True if `value` is defined.
+     */
+    isDefined: function (value) {
+        return typeof value !== 'undefined';
+    },
 
-/**
- * 
- * 
- * @param {any} method
- * @param {any} name
- * @param {any} gulpFn
- * @param {any} globs
- */
-Crip.prototype.addTask = function (method, name, gulpFn, globs) {
-    if (!this._tasks[method])
-        this._tasks[method] = {};
+    /**
+     * Determines if a reference is undefined.
+     * 
+     * @param {*} value Reference to check.
+     * @returns {boolean} True if `value` is undefined.
+     */
+    isUndefined: function (value) {
+        return !this.isDefined(value);
+    },
 
-    if (this._tasks[method][name])
-        throw new Error(Utils.supplant(
-            'In section {section} already exists task with name {name}',
-            { section: method, name: name }));
+    /**
+     * Determines if a reference is an `Object`. Unlike `typeof` in JavaScript, `null`s are not
+     * considered to be objects. Note that JavaScript arrays are objects.
+     * 
+     * @param {*} value Reference to check.
+     * @returns {boolean} True if `value` is an `Object` but not `null`.
+     */
+    isObject: function (value) {
+        return value !== null && typeof value === 'object';
+    },
 
-    this._tasks[method][name] = new Task(method, name, gulpFn, globs);
-}
+    /**
+     * Determines if a reference is a `String`.
+     * 
+     * @param {*} value Reference to check.
+     * @returns {boolean} True if `value` is a `String`.
+     */
+    isString: function (value) {
+        return typeof value === 'string';
+    },
 
-/**
- * 
- */
-Crip.prototype.defineDefaultMethods = function () {
-    this._methods.define('copy', new Copy(this._gulp, this._conf, this, this.addTask));
-}
+    /**
+     * Determines if a reference is a `Number`.
+     * This includes the "special" numbers `NaN`, `+Infinity` and `-Infinity`.
+     * 
+     * @param {*} value
+     * @returns {boolean} True if `value` is a `Number`.
+     */
+    isNumber: function (value) {
+        return typeof value === 'number';
+    },
 
-/**
- * 
- */
-Crip.prototype.defineRegisteredTasksInGulp = function () {
-    var self = this;
+    isArray: Array.isArray,
 
-    Utils.forEach(self._tasks, function (sectionValues, sectionKey) {
-        // register section task
-        self.defineTaskInGulp({ section: sectionKey });
+    /**
+     * Determines if a reference is a `Function`.
+     * 
+     * @param {*} value Reference to check.
+     * @returns {boolean} True if `value` is a `Function`.
+     */
+    isFunction: function (value) {
+        return typeof value === 'function';
+    },
 
-        Utils.forEach(sectionValues, function (task) {
-            // regiter task for each section item
-            self.defineTaskInGulp(self, task);
-        });
-    })
-}
+    /**
+     * Parse string to int.
+     * 
+     * @param {String} str String to parse.
+     * @returns {Number} Converted value of str.
+     */
+    toInt: function (str) {
+        return parseInt(str, 10);
+    },
 
-/**
- * 
- * 
- * @param {Task} task
- * @returns
- */
-Crip.prototype.defineTaskInGulp = function (task) {
-    var self = this;
-    var id = task.id || task.section;
+    /**
+     * Loop in object/array
+     *
+     * @param {Array|Object} obj Object to iterate over.
+     * @param {Function} iterator Iterator function.
+     * @returns {Object|Array} Reference to `obj`.
+     */
+    forEach: function (obj, iterator) {
+        for (var i in obj)
+            if (obj.hasOwnProperty(i))
+                iterator(obj[i], i);
 
-    if (Utils.contains(this._gulp.tasks, id)) return;
+        return obj;
+    },
 
-    this._gulp.task(id, function () {
-        var tasksToRun = self.findTasks(task.section, task.name);
-        Utils.forEach(tasksToRun, function (taskInstance) {
-            taskInstance.run();
-        });
-    });
-}
-
-/**
- * 
- * 
- * @param {any} section
- * @param {any} name
- * @returns
- */
-Crip.prototype.findTasks = function (section, name) {
-    if (!name)
-        return this._tasks[section];
-
-    return [this._tasks[section][name]];
-}
-
-/**
- * 
- */
-Crip.prototype.defineDefaultTasksInGulp = function () {
-    var self = this;
-
-    this._gulp.task('default', function () {
-        self._loopTasks(function (task) {
-            // move this check to configuration and allow dev to exclude task from default
-            if (!task.isWatch())
-                task.run();
-        })
-    });
-
-    this._gulp.task('watch', function () {
-        self._loopTasks(function (task) {
-            if (task.globs) {
-                watch(task.globs, batch(function () {
-                    return task.run();
-                }));
+    /**
+     * Variable substitution on the string. It scans through the string looking for 
+     * expressions enclosed in { } braces. If an expression is found, use it as a key on the object, 
+     * and if the key has a string value or number value, it is substituted for the bracket expression 
+     * and it repeats.
+     * 
+     * @param {String} tmpl Template for string replacement
+     * @param {Object} o Template value holder
+     * @returns {String} Replaced template with values from object
+     */
+    supplant: function (tmpl, o) {
+        return tmpl.replace(
+            /{([^{}]*)}/g,
+            function (a, b) {
+                var r = o[b];
+                return typeof r === 'string' || typeof r === 'number' ? r : a;
             }
+        );
+    },
+
+    /**
+     * Log custom text to console with timestamp prefix.
+     * 
+     * @param {...String} str
+     */
+    log: function (str) {
+        var text = ('[' + ((new Date).toTimeString()).substr(0, 8) + ']').grey;
+
+        this.forEach(arguments, function (value, key) {
+            if (key % 2)
+                text += (' ' + value).magenta;
+            else
+                text += (' ' + value).cyan;
         })
-    });
-}
 
-/**
- * 
- * 
- * @param {any} cb
- */
-Crip.prototype._loopTasks = function (cb) {
-    var self = this;
-    Utils.forEach(self._tasks, function (section, sectionName) {
-        Utils.forEach(section, function (task, name) {
-            cb(task, name, sectionName);
-        });
-    });
-}
+        return text;
+    },
 
-module.exports = Crip;
+    /**
+     * Recurse syncronous directory unlink
+     * 
+     * @param {String} pathToDir Path to folder to be deleted recurse
+     */
+    unlinkDir: function (pathToDir) {
+        if (!pathToDir || pathToDir === '' || pathToDir === '/' || pathToDir === '\\')
+            return;
+
+        if (fs.existsSync(pathToDir)) {
+            fs.readdirSync(pathToDir)
+                .forEach(function (file, index) {
+                    var curPath = path.join(pathToDir, file);
+
+                    if (fs.lstatSync(curPath).isDirectory()) // recurse
+                        this.unlinkDir(curPath);
+                    else // delete file
+                        fs.unlinkSync(curPath)
+                });
+
+            fs.rmdirSync(pathToDir);
+        }
+    }
+
+};
+
+module.exports = crip;

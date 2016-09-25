@@ -4,7 +4,9 @@ var sinonChai = require('sinon-chai');
 var sinon = require('sinon');
 var events = require('events');
 
-var Utils = require('./../crip/Utils');
+var utils = require('./../crip/utils');
+var crip = require('./../crip/crip');
+
 var Task = require('./../crip/Task');
 
 chai.use(sinonChai);
@@ -12,11 +14,11 @@ chai.use(sinonChai);
 describe('Task', function () {
 
     beforeEach(function () {
-        sinon.stub(Utils, 'log');
+        sinon.stub(crip, 'log');
     })
 
     afterEach(function () {
-        Utils.log.restore();
+        crip.log.restore();
     })
 
     it('constructor() should set public properties of task', function () {
@@ -36,7 +38,7 @@ describe('Task', function () {
         task.run({});
 
         expect(spy.calledOnce).to.be.ok;
-        expect(Utils.log).to.be.called;
+        expect(crip.log).to.be.called;
     })
 
     it('run() should add id to stack', function () {
@@ -46,7 +48,7 @@ describe('Task', function () {
 
         task.run(stack);
 
-        expect(Utils.log).to.be.called;
+        expect(crip.log).to.be.called;
         expect(stack).to.have.property('section-name', 1)
     })
 
@@ -63,7 +65,7 @@ describe('Task', function () {
         task.run(stack);
         gulpFake.emit('finish');
 
-        expect(Utils.log.calledTwice).to.be.ok;
+        expect(crip.log.calledTwice).to.be.ok;
         expect(stack).to.have.property('section-name', 0);
 
         done();
@@ -79,7 +81,7 @@ describe('Task', function () {
         task.run(stack);
 
         expect(spy.calledOnce).to.be.ok;
-        expect(Utils.log.calledOnce).to.be.ok;
+        expect(crip.log.calledOnce).to.be.ok;
         expect(stack).to.have.property('section-name', 1)
     })
 

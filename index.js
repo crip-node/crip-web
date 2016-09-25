@@ -1,15 +1,15 @@
-var Crip = require('./crip/Crip');
+var CripWeb = require('./crip/CripWeb');
 
 var Index = function (gulp, config) {
 
-    var crip = new Crip(gulp, config);
+    var cripWeb = new CripWeb(gulp, config);
 
     return function (devBuilder) {
-        devBuilder(crip.getPublicMethods());
+        devBuilder(cripWeb.getPublicMethods());
 
-        crip.defineRegisteredTasksInGulp();
+        cripWeb.defineRegisteredTasksInGulp();
 
-        crip.defineDefaultTasksInGulp();
+        cripWeb.defineDefaultTasksInGulp();
     }
 }
 

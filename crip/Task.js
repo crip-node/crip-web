@@ -1,4 +1,4 @@
-var Utils = require('./Utils');
+var crip = require('./crip');
 
 function Task(section, name, fn, globs) {
     this._fn = fn;
@@ -6,7 +6,7 @@ function Task(section, name, fn, globs) {
     this.globs = globs || false;
     this.section = section;
     this.name = name;
-    this.id = Utils.supplant('{section}-{name}', this);
+    this.id = crip.supplant('{section}-{name}', this);
 }
 
 Task.prototype.isWatch = function () {
@@ -21,11 +21,11 @@ Task.prototype.run = function (taskStack) {
     if (taskStack[id] == 0) {
         taskStack[id]++;
 
-        Utils.log('Starting crip', id, '...');
+        crip.log('Starting crip', id, '...');
         var currTime = new Date();
         return this._fn()
             .on('finish', function () {
-                Utils.log('Complete crip', id, 'after ' + (new Date() - currTime) + ' ms');
+                crip.log('Complete crip', id, 'after ' + (new Date() - currTime) + ' ms');
                 taskStack[id]--;
             })
     }
