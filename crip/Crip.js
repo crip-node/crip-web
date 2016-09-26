@@ -139,6 +139,8 @@ var crip = {
                 text += (' ' + value).cyan;
         })
 
+        console.log(text);
+
         return text;
     },
 
@@ -151,13 +153,14 @@ var crip = {
         if (!pathToDir || pathToDir === '' || pathToDir === '/' || pathToDir === '\\')
             return;
 
+        var self = this;
         if (fs.existsSync(pathToDir)) {
             fs.readdirSync(pathToDir)
                 .forEach(function (file, index) {
                     var curPath = path.join(pathToDir, file);
 
                     if (fs.lstatSync(curPath).isDirectory()) // recurse
-                        this.unlinkDir(curPath);
+                        self.unlinkDir(curPath);
                     else // delete file
                         fs.unlinkSync(curPath)
                 });

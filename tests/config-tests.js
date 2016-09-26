@@ -1,6 +1,5 @@
 var chai = require('chai');
 var expect = chai.expect;
-var sinonChai = require('sinon-chai');
 var sinon = require('sinon');
 var events = require('events');
 var fs = require('fs');
@@ -8,9 +7,6 @@ var fs = require('fs');
 var crip = require('./../crip/crip');
 
 var Config = require('./../crip/Config');
-
-chai.use(sinonChai);
-
 
 describe('Config', function () {
 

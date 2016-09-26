@@ -1,13 +1,9 @@
 var chai = require('chai');
 var expect = chai.expect;
-var sinonChai = require('sinon-chai');
 var sinon = require('sinon');
 var events = require('events');
 
 var Methods = require('./../crip/Methods');
-
-chai.use(sinonChai);
-
 
 describe('Methods', function () {
 

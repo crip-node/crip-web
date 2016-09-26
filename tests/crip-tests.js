@@ -1,11 +1,11 @@
 var chai = require('chai');
-var expect = chai.expect;
-var sinonChai = require('sinon-chai');
 var sinon = require('sinon');
+var fs = require('fs');
+var expect = chai.expect;
+
+chai.use(require('chai-fs'));
 
 var crip = require('./../crip/crip');
-
-chai.use(sinonChai);
 
 describe('crip', function () {
 
@@ -111,14 +111,29 @@ describe('crip', function () {
         expect(result).to.equal('1a2b3c');
     })
 
-    /*it('supplant() should replace all occurances', function () {
+    it('supplant() should replace all occurances', function () {
         var template = 'Hello {Name} {Surname}! You are welkom to {env} Unit test {num}';
         var vars = { Name: 'Igo', Surname: '', env: 'node.js', num: 1, obj: { a: 'b' } };
 
-        expect(utils.supplant(template, vars)).to.equal('Hello Igo ! You are welkom to node.js Unit test 1');
-    })*/
+        expect(crip.supplant(template, vars)).to.equal('Hello Igo ! You are welkom to node.js Unit test 1');
+    })
 
-    //it('log() should return logged string value', function () {
-    //    expect(Utils.log('type', 'event', 'append')).to.equal('['+((new Date).toTimeString()).substr(0, 8) + '] type \'event\' append');
-    //})
+    it('unlinkDir() should delete dir with folder', function () {
+
+        if (!fs.existsSync('./tests/files'))
+            fs.mkdirSync('./tests/files');
+
+        if (!fs.existsSync('./tests/files/crip-test'))
+            fs.mkdirSync('./tests/files/crip-test');
+
+        if (!fs.existsSync('./tests/files/crip-test/1'))
+            fs.writeFileSync('./tests/files/crip-test/1', '1');
+
+        if (!fs.existsSync('./tests/files/crip-test/2'))
+            fs.writeFileSync('./tests/files/crip-test/2', '2');
+
+        crip.unlinkDir('./tests/files');
+
+        expect('./tests/files/crip-test').to.not.be.a.path();
+    })
 })
