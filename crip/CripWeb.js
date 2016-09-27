@@ -1,79 +1,82 @@
-var Utils = require('./Utils');
-var Methods = require('./Methods');
-var Copy = require('./tasks/Copy');
-var Task = require('./Task');
+var utils = require('./utils');
+var crip = require('./crip');
 var watch = require('gulp-watch');
 
+var Methods = require('./Methods');
+var Task = require('./Task');
+var Config = require('./Config');
+var Copy = require('./tasks/Copy');
+
 /**
- * 
+ * Initialise new instance of CripWeb
  * 
  * @param {any} gulp
- * @param {any} config
+ * @param {*} config
  */
 function CripWeb(gulp, config) {
+    var self = this;
     this._gulp = gulp;
     this._tasks = {};
-    this._conf = config;
-    this._methods = new Methods(config);
+    this._activeTasks = {};
+    this._conf = new Config(config);
+    this._methods = new Methods(this._gulp, this._conf, this.addTask, this);
 
-    this.defineDefaultMethods();
+    defineDefaultMethods();
+
+    function defineDefaultMethods() {
+        self._methods.define('copy', Copy);
+    }
 }
 
 /**
+ * Get crip registered method wrapper
  * 
- * 
- * @returns
+ * @returns {Methods} crip public methods
  */
 CripWeb.prototype.getPublicMethods = function () {
     return this._methods;
 }
 
 /**
+ * Define task for method
  * 
- * 
- * @param {any} method
- * @param {any} name
- * @param {any} gulpFn
- * @param {any} globs
+ * @param {String} method
+ * @param {String} name
+ * @param {Function} gulpFn
+ * @param {String|Array} globs
  */
 CripWeb.prototype.addTask = function (method, name, gulpFn, globs) {
     if (!this._tasks[method])
         this._tasks[method] = {};
 
     if (this._tasks[method][name])
-        throw new Error(Utils.supplant(
+        throw new Error(crip.supplant(
             'In section {section} already exists task with name {name}',
             { section: method, name: name }));
 
-    this._tasks[method][name] = new Task(method, name, gulpFn, globs);
+    var task = new Task(method, name, gulpFn, globs);
+    this._tasks[method][name] = task;
 }
 
 /**
- * 
- */
-CripWeb.prototype.defineDefaultMethods = function () {
-    this._methods.define('copy', new Copy(this._gulp, this._conf, this, this.addTask));
-}
-
-/**
- * 
+ * Register all defined tasks in gulp object
  */
 CripWeb.prototype.defineRegisteredTasksInGulp = function () {
     var self = this;
 
-    Utils.forEach(self._tasks, function (sectionValues, sectionKey) {
+    crip.forEach(self._tasks, function (sectionValues, sectionKey) {
         // register section task
         self.defineTaskInGulp({ section: sectionKey });
 
-        Utils.forEach(sectionValues, function (task) {
+        crip.forEach(sectionValues, function (task) {
             // regiter task for each section item
-            self.defineTaskInGulp(self, task);
+            self.defineTaskInGulp(task);
         });
     })
 }
 
 /**
- * 
+ * Regiter Task instance in gulp
  * 
  * @param {Task} task
  * @returns
@@ -82,22 +85,22 @@ CripWeb.prototype.defineTaskInGulp = function (task) {
     var self = this;
     var id = task.id || task.section;
 
-    if (Utils.contains(this._gulp.tasks, id)) return;
+    if (utils.contains(this._gulp.tasks, id)) return;
 
     this._gulp.task(id, function () {
         var tasksToRun = self.findTasks(task.section, task.name);
-        Utils.forEach(tasksToRun, function (taskInstance) {
-            taskInstance.run();
+        crip.forEach(tasksToRun, function (taskInstance) {
+            taskInstance.run(self._activeTasks);
         });
     });
 }
 
 /**
+ * Search tasks by section and/or name
  * 
- * 
- * @param {any} section
- * @param {any} name
- * @returns
+ * @param {String} section Section of tasks to find
+ * @param {String?} name Name of task to find (if not presented - all section returned)
+ * @returns {Array} Array of tasks matching search parameters
  */
 CripWeb.prototype.findTasks = function (section, name) {
     if (!name)
@@ -107,7 +110,7 @@ CripWeb.prototype.findTasks = function (section, name) {
 }
 
 /**
- * 
+ * Define crip default tasks in gulp
  */
 CripWeb.prototype.defineDefaultTasksInGulp = function () {
     var self = this;
@@ -115,8 +118,8 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
     this._gulp.task('default', function () {
         self._loopTasks(function (task) {
             // move this check to configuration and allow dev to exclude task from default
-            if (!task.isWatch())
-                task.run();
+            if (!task.isInDefaults())
+                task.run(self._activeTasks);
         })
     });
 
@@ -124,7 +127,7 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
         self._loopTasks(function (task) {
             if (task.globs) {
                 watch(task.globs, batch(function () {
-                    return task.run();
+                    return task.run(self._activeTasks);
                 }));
             }
         })
@@ -132,14 +135,14 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
 }
 
 /**
+ * Loop all defined tasks in crip
  * 
- * 
- * @param {any} cb
+ * @param {Function} cb Callback as iterator
  */
 CripWeb.prototype._loopTasks = function (cb) {
     var self = this;
-    Utils.forEach(self._tasks, function (section, sectionName) {
-        Utils.forEach(section, function (task, name) {
+    crip.forEach(self._tasks, function (section, sectionName) {
+        crip.forEach(section, function (task, name) {
             cb(task, name, sectionName);
         });
     });

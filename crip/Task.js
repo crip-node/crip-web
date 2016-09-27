@@ -1,31 +1,52 @@
 var crip = require('./crip');
 
-function Task(section, name, fn, globs) {
+/**
+ * Initialise new instance of Task
+ * 
+ * @param {String} section
+ * @param {String} name
+ * @param {Function} fn
+ * @param {String|Array} globs
+ * @param {Boolean?} includeInDefault
+ */
+function Task(section, name, fn, globs, includeInDefault) {
     this._fn = fn;
-    
+    this._includeInDefault = includeInDefault || false;
+
     this.globs = globs || false;
     this.section = section;
     this.name = name;
     this.id = crip.supplant('{section}-{name}', this);
 }
 
-Task.prototype.isWatch = function () {
-    return this.section == 'watch';
+/**
+ * Determines is the task included for gulp 'default' task
+ * 
+ * @returns {Boolean}
+ */
+Task.prototype.isInDefaults = function () {
+    return !!this._includeInDefault;
 }
 
+/**
+ * Execite task deffinition
+ * 
+ * @param {Object} taskStack Task stack to determine is task already exequting
+ * @returns
+ */
 Task.prototype.run = function (taskStack) {
     var id = this.id;
-    if (typeof (taskStack[id]) === 'undefined')
+    if (typeof taskStack[id] === 'undefined')
         taskStack[id] = 0;
 
     if (taskStack[id] == 0) {
         taskStack[id]++;
 
-        crip.log('Starting crip', id, '...');
+        crip.log('Starting CRIP', id, '...');
         var currTime = new Date();
         return this._fn()
             .on('finish', function () {
-                crip.log('Complete crip', id, 'after ' + (new Date() - currTime) + ' ms');
+                crip.log('Finished CRIP', id, 'after ' + (new Date() - currTime) + ' ms');
                 taskStack[id]--;
             })
     }
