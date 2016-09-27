@@ -1,7 +1,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 
-var utils = require('./../crip/utils');
+var utils = require('./../../crip/utils');
 
 describe('Utils', function () {
 

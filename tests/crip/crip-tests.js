@@ -5,7 +5,7 @@ var expect = chai.expect;
 
 chai.use(require('chai-fs'));
 
-var crip = require('./../crip/crip');
+var crip = require('./../../crip/crip');
 
 describe('crip', function () {
 

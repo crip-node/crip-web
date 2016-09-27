@@ -3,7 +3,7 @@ var expect = chai.expect;
 var sinon = require('sinon');
 var events = require('events');
 
-var Methods = require('./../crip/Methods');
+var Methods = require('./../../crip/Methods');
 
 describe('Methods', function () {
 

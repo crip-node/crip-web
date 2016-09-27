@@ -33,22 +33,33 @@ function Copy(gulp, config, cripweb, registerTask) {
                 .pipe(gulp.dest(options.output));
         }
 
-        registerTask.apply(cripweb, ['copy', taskName, gulpAction, options.src]);
+        registerTask.apply(cripweb, ['copy', taskName, gulpAction, options.src/*, TODO: include or exclude task from default */]);
 
         return cripweb.getPublicMethods();
     }
 }
 
 /**
- * Initialise crip default configuration for Copy task
+ * Initialise crip default configuration for Copy task.
  * 
  * @param {Config} config
  */
 Copy.prototype.configure = function (config) {
     config.set('copy', {
         base: '',
-        output: '{assetsDist}'
+        output: '{assetsDist}',
+        isInDefaults: true
     });
+}
+
+/**
+ * Determines are this method tasks included in gulp default task.
+ * 
+ * @param {Config} config crip configuration for use to determine.
+ * @returns {Boolean} Include tasks of this method to defaults or not.
+ */
+Copy.prototype.isInDefault = function (config) {
+    return config.get('copy.isInDefaults');
 }
 
 

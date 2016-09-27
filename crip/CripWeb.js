@@ -15,13 +15,18 @@ var Copy = require('./tasks/Copy');
  */
 function CripWeb(gulp, config) {
     var self = this;
+    this._Task = Task;
+
     this._gulp = gulp;
     this._tasks = {};
     this._activeTasks = {};
-    this._conf = new Config(config);
+    this._conf = new Config({});
     this._methods = new Methods(this._gulp, this._conf, this.addTask, this);
 
     defineDefaultMethods();
+
+    // set dev defined configurations only after Methods.configure is executed;
+    this._conf.set(config);
 
     function defineDefaultMethods() {
         self._methods.define('copy', Copy);
@@ -44,17 +49,23 @@ CripWeb.prototype.getPublicMethods = function () {
  * @param {String} name
  * @param {Function} gulpFn
  * @param {String|Array} globs
+ * @param {Boolean?} isDefault
  */
-CripWeb.prototype.addTask = function (method, name, gulpFn, globs) {
+CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault) {
     if (!this._tasks[method])
         this._tasks[method] = {};
 
+    if(!this._methods[method])
+        throw new Error(crip.supplant('Could not add task {name} for undefined section "{section}"!', { section: method, name: name }));
+
     if (this._tasks[method][name])
         throw new Error(crip.supplant(
-            'In section {section} already exists task with name {name}',
+            'In section {section} already exists task with name "{name}"!',
             { section: method, name: name }));
 
-    var task = new Task(method, name, gulpFn, globs);
+    var methodIsDefault = this._methods[method].isInDefault();
+    var includeInDefault = crip.isDefined(isDefault) ? isDefault : methodIsDefault;
+    var task = new this._Task(method, name, gulpFn, globs, includeInDefault);
     this._tasks[method][name] = task;
 }
 

@@ -4,9 +4,9 @@ var sinon = require('sinon');
 var events = require('events');
 var fs = require('fs');
 
-var crip = require('./../crip/crip');
+var crip = require('./../../crip/crip');
 
-var Config = require('./../crip/Config');
+var Config = require('./../../crip/Config');
 
 describe('Config', function () {
 

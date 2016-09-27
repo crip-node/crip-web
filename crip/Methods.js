@@ -6,6 +6,7 @@ var crip = require('./crip');
  * @param {Config} config
  */
 function CripMethods(gulp, config, task, cripweb) {
+    var self = this;
     this.config = config;
 
     /**
@@ -23,10 +24,16 @@ function CripMethods(gulp, config, task, cripweb) {
         if (!taskDefinition.fn)
             throw new Error(crip.supplant('Crip cannot register "{method}" method without definition!', { method: name }));
 
-        this[name] = taskDefinition.fn;
-
-        if (taskDefinition.configure && crip.isFunction(taskDefinition.configure)) {
+        if (crip.isFunction(taskDefinition.configure)) {
             taskDefinition.configure(this.config);
+        }
+
+        this[name] = taskDefinition.fn;
+        this[name].isInDefault = function () {
+            if (crip.isFunction(taskDefinition.isInDefault))
+                return taskDefinition.isInDefault(self.config);
+
+            return true;
         }
     }
 }

@@ -3,9 +3,9 @@ var expect = chai.expect;
 var sinon = require('sinon');
 var events = require('events');
 
-var utils = require('./../crip/utils');
-var crip = require('./../crip/crip');
-var Task = require('./../crip/Task');
+var utils = require('./../../crip/utils');
+var crip = require('./../../crip/crip');
+var Task = require('./../../crip/Task');
 
 describe('Task', function () {
 
