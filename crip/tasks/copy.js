@@ -38,8 +38,12 @@ function Copy(gulp, config, cripweb, registerTask) {
         utils.appendBase(options);
 
         function gulpAction() {
-            return gulp.src(options.src)
+            console.log('---------- 1')
+            var result = gulp.src(options.src)
                 .pipe(gulp.dest(options.output));
+            result.on('end', function () { console.log('---------- 2') });
+
+            return result;
         }
 
         registerTask.apply(cripweb, ['copy', taskName, gulpAction, options.src/*, TODO: include or exclude task from default */]);
