@@ -1,6 +1,9 @@
 var utils = require('./../utils');
+var crip = require('./../crip');
 
 function Copy(gulp, config, cripweb, registerTask) {
+
+    this.config = config;
 
     /**
      * Copy globs to output path
@@ -12,6 +15,12 @@ function Copy(gulp, config, cripweb, registerTask) {
      * @returns {CripMethods}
      */
     this.fn = function (taskName, globs, outputPath, prependPath) {
+        if (!crip.isArray(globs) && !crip.isString(globs))
+            throw new Error('Copy task could not be executed without globs! "globs" argument as Array | String is required.');
+
+        if (!crip.isString(taskName) || taskName.length < 3)
+            throw new Error('Copy task could not be executed without name! "name" argument as String with length > 3 is required.');
+
         var options = {
             src: globs,
             base: config.get('copy.base'),
@@ -41,11 +50,9 @@ function Copy(gulp, config, cripweb, registerTask) {
 
 /**
  * Initialise crip default configuration for Copy task.
- * 
- * @param {Config} config
  */
-Copy.prototype.configure = function (config) {
-    config.set('copy', {
+Copy.prototype.configure = function () {
+    this.config.set('copy', {
         base: '',
         output: '{assetsDist}',
         isInDefaults: true
@@ -55,11 +62,10 @@ Copy.prototype.configure = function (config) {
 /**
  * Determines are this method tasks included in gulp default task.
  * 
- * @param {Config} config crip configuration for use to determine.
  * @returns {Boolean} Include tasks of this method to defaults or not.
  */
-Copy.prototype.isInDefault = function (config) {
-    return config.get('copy.isInDefaults');
+Copy.prototype.isInDefault = function () {
+    return this.config.get('copy.isInDefaults');
 }
 
 

@@ -25,7 +25,7 @@ function CripMethods(gulp, config, task, cripweb) {
             throw new Error(crip.supplant('Crip cannot register "{method}" method without definition!', { method: name }));
 
         if (crip.isFunction(taskDefinition.configure)) {
-            taskDefinition.configure(this.config);
+            taskDefinition.configure();
         }
 
         this[name] = taskDefinition.fn;

@@ -7,10 +7,11 @@ var Task = require('./Task');
 var Config = require('./Config');
 var Copy = require('./tasks/Copy');
 
+
 /**
  * Initialise new instance of CripWeb
  * 
- * @param {any} gulp
+ * @param {gulp} gulp
  * @param {*} config
  */
 function CripWeb(gulp, config) {
