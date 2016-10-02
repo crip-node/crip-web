@@ -3,6 +3,8 @@ var expect = chai.expect;
 var sinon = require('sinon');
 var events = require('events');
 
+chai.use(require('sinon-chai'));
+
 var utils = require('./../../crip/utils');
 var crip = require('./../../crip/crip');
 var Task = require('./../../crip/Task');
@@ -38,8 +40,8 @@ describe('Task', function () {
 
             task.run({});
 
-            expect(spy.calledOnce).to.be.ok;
-            expect(crip.log).to.be.called;
+            expect(spy).to.have.been.calledOnce;
+            expect(crip.log).to.have.been.calledOnce;
         })
 
         it('should add id to stack', function () {
@@ -53,8 +55,7 @@ describe('Task', function () {
             expect(stack).to.have.property('section-name', 1)
         })
 
-        it('should decrease stack propery value on fn finish emit', function (done) {
-
+        it('should decrease stack propery value on fn finish emit', function () {
             function GulpFake() { }
             GulpFake.prototype.__proto__ = events.EventEmitter.prototype;
 
@@ -66,10 +67,8 @@ describe('Task', function () {
             task.run(stack);
             gulpFake.emit('finish');
 
-            expect(crip.log.calledTwice).to.be.ok;
+            expect(crip.log).to.have.been.calledTwice;
             expect(stack).to.have.property('section-name', 0);
-
-            done();
         })
 
         it('should be executed only once if finish event is not fired', function () {
@@ -81,9 +80,27 @@ describe('Task', function () {
             task.run(stack);
             task.run(stack);
 
-            expect(spy.calledOnce).to.be.ok;
-            expect(crip.log.calledOnce).to.be.ok;
+            expect(spy).to.have.been.calledOnce;
+            expect(crip.log).to.have.been.calledOnce;
             expect(stack).to.have.property('section-name', 1)
+        })
+
+        it('should fire finish event with task id on gulp finish event', function() {
+            function GulpFake() { }
+            GulpFake.prototype.__proto__ = events.EventEmitter.prototype;
+
+            var gulpFake = new GulpFake();
+            var stack = {};
+            var fn = function () { return gulpFake; };
+            var spy =  sinon.spy();
+            var task = new Task('section', 'name', fn, 'glob/string');
+
+            task.on('finish', spy);
+
+            task.run(stack);
+            gulpFake.emit('finish');
+
+            expect(spy).to.have.been.calledWithExactly('section-name');
         })
     })
 
