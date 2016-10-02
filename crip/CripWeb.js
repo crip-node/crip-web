@@ -97,29 +97,44 @@ CripWeb.prototype.defineRegisteredTasksInGulp = function () {
  * @returns
  */
 CripWeb.prototype.defineTaskInGulp = function (task) {
-    var self = this;
     var id = task.id || task.section;
     var methods = this._methods;
 
     if (utils.contains(this._gulp.tasks, id)) return;
 
-    this._gulp.task(id, function (done) {
-        var tasksToRun = self.findTasks(task.section, task.name);
-        var counter = { count: Object.keys(tasksToRun).length };
+    this._registerGulpTask(id, this.findTasks(task.section, task.name));
+}
 
-        function decreaseCounter() {
-            counter.count--;
-            if (counter.count <= 0) {
+/**
+ * Register gulp task with collection of crip tasks
+ * 
+ * @param {String} taskId Unique name for gulp task
+ * @param {Array|Object} tasks Collection of crip Tasks to be executed under gulp task 
+ */
+CripWeb.prototype._registerGulpTask = function (taskId, tasks) {
+    var self = this;
+    var gulp = this._gulp;
+    var methods = this._methods;
+    var activeTasks = this._activeTasks;
+    var counter = { c: Object.keys(tasks).length };
+    var emit = function (id) {
+        var name = crip.supplant('finish-{id}', { id: id });
+        methods.emit(name);
+    };
+
+    gulp.task(taskId, function (done) {
+        var emitDone = function (id) {
+            emit(id);
+
+            if (--counter.c <= 0) {
                 done();
+                emit(taskId);
             }
         }
 
-        crip.forEach(tasksToRun, function (taskInstance) {
-            taskInstance.run(self._activeTasks, decreaseCounter);
-            taskInstance.on('finish', function (taskId) {
-                var eventName = crip.supplant('finish-{id}', { id: taskId });
-                methods.emit(eventName);
-            })
+        crip.forEach(tasks, function (task) {
+            task.run(activeTasks);
+            task.on('finish', emitDone);
         });
     });
 }
@@ -135,7 +150,11 @@ CripWeb.prototype.findTasks = function (section, name) {
     if (!name)
         return this._tasks[section];
 
-    return [this._tasks[section][name]];
+    var result = {};
+    var key = crip.supplant('{section}-{name}', { section: section, name: name });
+    result[key] = this._tasks[section][name];
+
+    return result;
 }
 
 /**
@@ -143,15 +162,17 @@ CripWeb.prototype.findTasks = function (section, name) {
  */
 CripWeb.prototype.defineDefaultTasksInGulp = function () {
     var self = this;
+    var defaultTasks = {};
 
-    this._gulp.task('default', function () {
-        self._loopTasks(function (task) {
-            // move this check to configuration and allow dev to exclude task from default
-            if (!task.isInDefaults())
-                task.run(self._activeTasks);
-        })
+
+    this._loopTasks(function (task) {
+        if (task.isInDefaults())
+            defaultTasks[task.id] = task;
     });
 
+    this._registerGulpTask('default', defaultTasks);
+
+    // TODO: find a way how to avoid this duplicate of '_registerGulpTask' method
     this._gulp.task('watch-glob', function () {
         self._loopTasks(function (task) {
             if (task.globs) {

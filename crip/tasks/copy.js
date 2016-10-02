@@ -37,11 +37,9 @@ function Copy(gulp, config, cripweb, registerTask) {
 
         utils.appendBase(options);
 
-        function gulpAction(done) {
+        function gulpAction() {
             var result = gulp.src(options.src)
                 .pipe(gulp.dest(options.output));
-
-            done();
 
             return result;
         }

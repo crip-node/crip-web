@@ -40,7 +40,7 @@ Task.prototype.isInDefaults = function () {
  * @param {Object} taskStack Task stack to determine is task already exequting
  * @returns
  */
-Task.prototype.run = function (taskStack, done) {
+Task.prototype.run = function (taskStack) {
     var self = this;
     var id = this.id;
 
@@ -52,7 +52,7 @@ Task.prototype.run = function (taskStack, done) {
 
         crip.log('Starting CRIP', ("'" + id + "'"), '...');
         var currTime = new Date();
-        return this._fn(done)
+        return this._fn()
             .on('finish', function () {
                 crip.log('Finished CRIP', ("'" + id + "'"), 'after', (new Date() - currTime), 'ms');
                 taskStack[id]--;
