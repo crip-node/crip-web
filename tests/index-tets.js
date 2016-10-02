@@ -43,7 +43,7 @@ describe('index', function () {
 
             methods.on('finish-copy-task-1', function () {
                 expect('./files/dist/a.txt').to.be.a.path();
-                
+
                 cripUtil.unlinkDir('./files');
                 done();
             });
@@ -207,19 +207,23 @@ describe('index', function () {
     });
 
     describe('#default', function () {
-        /*it('should execute all defined copy tasks', function (done) {
+        it('should execute all defined copy tasks', function (done) {
             var cripweb = require('./../index');
             var methods;
 
+            fs.mkdirSync('./files');
+            fs.writeFileSync('./files/m.txt', 'm.txt');
+            fs.writeFileSync('./files/n.txt', 'n.txt');
+
             cripweb(gulp)(function (crip) {
                 crip.config.set({
-                    copy: { base: './tests/index-files', output: './tests/index-files/dist' },
-                    watch: { base: './tests/index-files' }
+                    copy: { base: './files', output: './files/dist' },
+                    watch: { base: './files' }
                 });
 
                 methods =
-                    crip.copy('task-1', 'a.txt')
-                        .copy('task-2', 'b.txt')
+                    crip.copy('task-1', 'm.txt')
+                        .copy('task-2', 'n.txt')
                         .watch('task-1', '*.*', ['copy-task-1']);
             })
 
@@ -230,12 +234,14 @@ describe('index', function () {
             expect(gulp.tasks).to.have.property('watch-task-1');
 
             methods.on('finish-default', function () {
-                expect('./tests/index-files/dist/a.txt').to.be.a.path();
-                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                expect('./files/dist/m.txt').to.be.a.path();
+                expect('./files/dist/n.txt').to.be.a.path();
+
+                cripUtil.unlinkDir('./files');
                 done();
             });
 
             gulp.start('default');
-        })*/
+        })
     })
 });
