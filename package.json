@@ -35,7 +35,8 @@
     "colors": "^1.1",
     "extend": "^3.0",
     "gulp": "^3.9",
-    "gulp-watch": "^4.3.9",
+    "gulp-batch": "^1.0.5",
+    "gulp-watch": "^4.3.10",
     "path": "^0.12"
   },
   "readme": "# cripweb \r\n Crip fluent API for Gulp\r\n",

@@ -5,7 +5,9 @@ var watch = require('gulp-watch');
 var Methods = require('./Methods');
 var Task = require('./Task');
 var Config = require('./Config');
+
 var Copy = require('./tasks/Copy');
+var Watch = require('./tasks/Watch');
 
 
 /**
@@ -31,6 +33,7 @@ function CripWeb(gulp, config) {
 
     function defineDefaultMethods() {
         self._methods.define('copy', Copy);
+        self._methods.define('watch', Watch);
     }
 }
 
@@ -149,7 +152,7 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
         })
     });
 
-    this._gulp.task('watch', function () {
+    this._gulp.task('watch-glob', function () {
         self._loopTasks(function (task) {
             if (task.globs) {
                 watch(task.globs, batch(function () {

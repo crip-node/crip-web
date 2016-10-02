@@ -20,17 +20,18 @@ describe('CripWeb', function () {
         expect(Object.keys(cripweb._activeTasks).length).to.equal(0);
 
         expect(cripweb).to.have.property('_methods');
-        expect(Object.keys(cripweb._methods).length).to.equal(3); // only copy 
+        expect(Object.keys(cripweb._methods).length).to.equal(4); // only copy 
     })
 
     it('getPublicMethods() should return methods object', function () {
         var cripweb = new CripWeb({}, {});
 
         var methods = cripweb.getPublicMethods();
-        expect(Object.keys(methods).length).to.equal(3);
+        expect(Object.keys(methods).length).to.equal(4);
         expect(methods).to.have.property('config');
         expect(methods).to.have.property('define');
         expect(methods).to.have.property('copy');
+        expect(methods).to.have.property('watch');
     })
 
     describe('#addTask', function () {
@@ -91,7 +92,7 @@ describe('CripWeb', function () {
         expect(gulp.task.getCall(1).args[0]).to.be.equal('copy-name');
     })
 
-    it('defineDefaultTasksInGulp() should call _gulp with default and watch', function () {
+    it('defineDefaultTasksInGulp() should call _gulp with default and watch-glob', function () {
         var gulp = { task: sinon.spy() };
         var cripweb = new CripWeb(gulp, {});
 
@@ -99,7 +100,7 @@ describe('CripWeb', function () {
 
         expect(gulp.task).to.have.been.calledTwice;
         expect(gulp.task.getCall(0).args[0]).to.be.equal('default');
-        expect(gulp.task.getCall(1).args[0]).to.be.equal('watch');
+        expect(gulp.task.getCall(1).args[0]).to.be.equal('watch-glob');
     })
 
 })
