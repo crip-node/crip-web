@@ -17,6 +17,15 @@ function Watch(gulp, config, cripweb, registerTask) {
      * @returns {CripMethods}
      */
     this.fn = function (taskName, globs, deps, prependPath) {
+        if (!crip.isString(taskName) || taskName.length < 3)
+            throw new Error('Watch task could not be executed without name! "name" argument as String with length > 3 is required.');
+
+        if (!crip.isArray(globs) && !crip.isString(globs))
+            throw new Error('Watch task could not be executed without globs! "globs" argument as Array | String is required.');
+
+        if (!crip.isArray(deps) && !crip.isString(deps))
+            throw new Error('Watch task could not be executed without deps! "deps" argument as Array | String is required.');
+
         var options = {
             src: globs,
             base: config.get('watch.base')

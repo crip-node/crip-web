@@ -41,7 +41,7 @@ describe('Watch', function () {
             var cripweb = { getPublicMethods: noop };
             var watch = new Watch('gulp', config, cripweb, noop);
 
-            watch.fn('taskName', 'globs');
+            watch.fn('taskName', 'globs', 'deps');
 
             expect(config.get).to.have.been.calledOnce;
             expect(config.get.getCall(0)).to.have.been.calledWithExactly('watch.base');
@@ -82,7 +82,35 @@ describe('Watch', function () {
             expect(utils.appendBase).to.have.been.calledWithExactly({ base: '', src: 'globs' });
         })
 
-        /* TODO: test errors when incorrect parameters */
+        it('should throw error if deps is not presented', function () {
+            var copy = new Watch('gulp', 'config', 'cripweb', 'noop');
+
+            var delegate = function () {
+                copy.fn('taskName', 'globs');
+            }
+
+            expect(delegate).to.throw(Error, 'Watch task could not be executed without deps! "deps" argument as Array | String is required.');
+        })
+
+        it('should throw error if globs is not presented', function () {
+            var copy = new Watch('gulp', 'config', 'cripweb', 'noop');
+
+            var delegate = function () {
+                copy.fn('taskName');
+            }
+
+            expect(delegate).to.throw(Error, 'Watch task could not be executed without globs! "globs" argument as Array | String is required.');
+        })
+
+        it('should throw error if name is not string with length > 3', function () {
+            var copy = new Watch('gulp', 'config', 'cripweb', 'noop');
+
+            var delegate = function () {
+                copy.fn({}, 'globs');
+            }
+
+            expect(delegate).to.throw(Error, 'Watch task could not be executed without name! "name" argument as String with length > 3 is required.');
+        })
 
     })
 
