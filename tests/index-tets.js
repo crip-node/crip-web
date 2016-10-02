@@ -12,22 +12,21 @@ describe('index', function () {
 
     beforeEach(function () {
         sinon.stub(cripUtil, 'log');
-        if (!fs.existsSync('./tests/index-files'))
-            fs.mkdirSync('./tests/index-files');
-
-        if (!fs.existsSync('./tests/index-files/a.txt'))
-            fs.writeFileSync('./tests/index-files/a.txt', '(function(var1){console.log(var1);if(typeof var1 === "number") if(var1 > 1) alert(var1*10)})(5)');
-
-        if (!fs.existsSync('./tests/index-files/b.txt'))
-            fs.writeFileSync('./tests/index-files/b.txt', '/*Content of b.txt file*/');
     })
 
     afterEach(function () {
+        cripUtil.unlinkDir('./tests/index-files/dist');
         cripUtil.log.restore();
-        cripUtil.unlinkDir('./tests/index-files');
     })
 
     describe('#copy', function () {
+        var cripConfig = {
+            copy: {
+                base: './tests/index-files',
+                output: './tests/index-files/dist'
+            }
+        };
+
         it('should copy single file if globs is direct file path', function (done) {
             var cripweb = require('./../index');
             var methods;
@@ -42,12 +41,100 @@ describe('index', function () {
             gulp.start('copy-task-1');
 
             methods.on('finish-copy-task-1', function () {
-
-                expect('./tests/index-files-dist/a.txt').to.be.a.path();
-
+                expect('./tests/index-files/dist/a.txt').to.be.a.path();
                 done();
             });
         })
+
+        it('should copy single file if globs is direct file path and base path presented', function (done) {
+            var cripweb = require('./../index');
+            var methods;
+
+            cripweb(gulp)(function (crip) {
+                methods = crip.copy('task-1', 'b.txt', './tests/index-files/dist', './tests/index-files');
+            })
+            gulp.start('copy-task-1');
+
+            methods.on('finish-copy-task-1', function () {
+                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                done();
+            });
+        })
+
+        it('should copy glob array if base presented', function (done) {
+            var cripweb = require('./../index');
+            var methods;
+
+            cripweb(gulp)(function (crip) {
+                methods = crip.copy('task-1', ['a.txt', 'b.txt'], './tests/index-files/dist', './tests/index-files');
+            })
+            gulp.start('copy-task-1');
+
+            methods.on('finish-copy-task-1', function () {
+                expect('./tests/index-files/dist/a.txt').to.be.a.path();
+                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                done();
+            });
+        })
+
+        it('should copy glob array if outputPath and prependPath is set on crip create', function (done) {
+            var cripweb = require('./../index');
+            var methods;
+
+            cripweb(gulp, cripConfig)(function (crip) {
+                methods = crip.copy('task-1', ['a.txt', 'b.txt']);
+            })
+            gulp.start('copy-task-1');
+
+            methods.on('finish-copy-task-1', function () {
+                expect('./tests/index-files/dist/a.txt').to.be.a.path();
+                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                done();
+            });
+        })
+
+        it('should copy glob expression if outputPath and prependPath is set before calling copy', function (done) {
+            var cripweb = require('./../index');
+            var methods;
+
+            cripweb(gulp)(function (crip) {
+                crip.config.set('copy', cripConfig.copy);
+
+                methods = crip.copy('task-1', '*.*');
+            })
+            gulp.start('copy-task-1');
+
+            methods.on('finish-copy-task-1', function () {
+                expect('./tests/index-files/dist/a.txt').to.be.a.path();
+                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                done();
+            });
+        })
+
+        it('should copy glob expression if outputPath and prependPath are expressions', function (done) {
+            var cripweb = require('./../index');
+            var methods;
+            var config = {
+                testRoot: './tests',
+                root: '{copy.testRoot}/index-files',
+                base: '{copy.root}',
+                output: '{copy.root}/dist'
+            };
+
+            cripweb(gulp)(function (crip) {
+                crip.config.set('copy', config);
+
+                methods = crip.copy('task-1', '*.*');
+            })
+            gulp.start('copy-task-1');
+
+            methods.on('finish-copy-task-1', function () {
+                expect('./tests/index-files/dist/a.txt').to.be.a.path();
+                expect('./tests/index-files/dist/b.txt').to.be.a.path();
+                done();
+            });
+        })
+
     });
 
 });
