@@ -1,4 +1,5 @@
 var crip = require('./crip');
+var events = require('events');
 
 /**
  * Initialise new instance of Task
@@ -20,6 +21,11 @@ function Task(section, name, fn, globs, includeInDefault) {
 }
 
 /**
+ * Extending EventEmitter prototype
+ */
+Task.prototype.__proto__ = events.EventEmitter.prototype;
+
+/**
  * Determines is the task included for gulp 'default' task
  * 
  * @returns {Boolean}
@@ -34,20 +40,23 @@ Task.prototype.isInDefaults = function () {
  * @param {Object} taskStack Task stack to determine is task already exequting
  * @returns
  */
-Task.prototype.run = function (taskStack) {
+Task.prototype.run = function (taskStack, done) {
+    var self = this;
     var id = this.id;
+
     if (typeof taskStack[id] === 'undefined')
         taskStack[id] = 0;
 
     if (taskStack[id] == 0) {
         taskStack[id]++;
 
-        crip.log('Starting CRIP', id, '...');
+        crip.log('Starting CRIP', ("'" + id + "'"), '...');
         var currTime = new Date();
-        return this._fn()
+        return this._fn(done)
             .on('finish', function () {
-                crip.log('Finished CRIP', id, 'after ' + (new Date() - currTime) + ' ms');
+                crip.log('Finished CRIP', ("'" + id + "'"), 'after', (new Date() - currTime), 'ms');
                 taskStack[id]--;
+                self.emit('finish', id);
             })
     }
 }

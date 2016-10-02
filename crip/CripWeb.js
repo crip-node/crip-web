@@ -56,7 +56,7 @@ CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault) {
     if (!this._tasks[method])
         this._tasks[method] = {};
 
-    if(!this._methods[method])
+    if (!this._methods[method])
         throw new Error(crip.supplant('Could not add task {name} for undefined section "{section}"!', { section: method, name: name }));
 
     if (this._tasks[method][name])
@@ -96,13 +96,27 @@ CripWeb.prototype.defineRegisteredTasksInGulp = function () {
 CripWeb.prototype.defineTaskInGulp = function (task) {
     var self = this;
     var id = task.id || task.section;
+    var methods = this._methods;
 
     if (utils.contains(this._gulp.tasks, id)) return;
 
-    this._gulp.task(id, function () {
+    this._gulp.task(id, function (done) {
         var tasksToRun = self.findTasks(task.section, task.name);
+        var counter = { count: Object.keys(tasksToRun).length };
+
+        function decreaseCounter() {
+            counter.count--;
+            if (counter.count <= 0) {
+                done();
+            }
+        }
+
         crip.forEach(tasksToRun, function (taskInstance) {
-            taskInstance.run(self._activeTasks);
+            taskInstance.run(self._activeTasks, decreaseCounter);
+            taskInstance.on('finish', function (taskId) {
+                var eventName = crip.supplant('finish-{id}', { id: taskId });
+                methods.emit(eventName);
+            })
         });
     });
 }

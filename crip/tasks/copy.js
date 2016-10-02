@@ -37,11 +37,11 @@ function Copy(gulp, config, cripweb, registerTask) {
 
         utils.appendBase(options);
 
-        function gulpAction() {
-            console.log('---------- 1')
+        function gulpAction(done) {
             var result = gulp.src(options.src)
                 .pipe(gulp.dest(options.output));
-            result.on('end', function () { console.log('---------- 2') });
+
+            done();
 
             return result;
         }

@@ -1,4 +1,5 @@
 var crip = require('./crip');
+var events = require('events');
 
 /**
  * Creates new instance of crip public method holder
@@ -37,5 +38,12 @@ function CripMethods(gulp, config, task, cripweb) {
         }
     }
 }
+
+/**
+ * Extending EventEmitter prototype
+ */
+CripMethods.prototype.__proto__ = events.EventEmitter.prototype;
+
+
 
 module.exports = CripMethods;

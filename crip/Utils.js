@@ -40,7 +40,7 @@ var utils = {
             })
         } else
             //treat as a string
-            options.src = path.join(options.base, options.src).replace(trimRegex, '')
+            options.src = path.join(options.base, options.src).replace(trimRegex, '');
     }
 }
 
