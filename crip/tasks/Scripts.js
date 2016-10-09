@@ -3,7 +3,7 @@ var If = require('gulp-if');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
-var foreach = require('gulp-foreach');
+var flatmap = require('gulp-flatmap');
 var sourcemaps = require('gulp-sourcemaps');
 
 var crip = require('./../crip');
@@ -70,7 +70,7 @@ function Scripts(gulp, config, cripweb, registerTask) {
                 .pipe(If(options.concat, rename(options.outputFile)))
                 .pipe(If(enableSourcemapsConcat, sourcemaps.write(options.sourcemaps.location, options.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
-                .pipe(If(enableUglifyNoConcat, foreach(function (stream, file) {
+                .pipe(If(enableUglifyNoConcat, flatmap(function (stream, file) {
                     return stream.pipe(uglify(options.uglify.options))
                         .pipe(rename({ suffix: '.min' }));
                 })))
