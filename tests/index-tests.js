@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var expect = chai.expect;
 var fs = require('fs');
 var gulp = require('gulp');
-var cripUtil = require('./../crip/crip');
+var cripCore = require('crip-core');
 
 chai.use(require('chai-fs'));
 chai.use(require('sinon-chai'));
@@ -11,11 +11,11 @@ chai.use(require('sinon-chai'));
 describe('index #copy', function () {
 
     beforeEach(function () {
-        sinon.stub(cripUtil, 'log');
+        sinon.stub(cripCore, 'log');
     })
 
     afterEach(function () {
-        cripUtil.log.restore();
+        cripCore.log.restore();
     })
 
     describe('#default', function () {
@@ -24,7 +24,7 @@ describe('index #copy', function () {
             var methods;
 
             if (fs.existsSync('./files'))
-                cripUtil.unlinkDir('./files');
+                cripCore.unlinkDir('./files');
             fs.mkdirSync('./files');
             fs.writeFileSync('./files/m.txt', 'm.txt');
             fs.writeFileSync('./files/n.txt', 'n.txt');
@@ -67,7 +67,7 @@ describe('index #copy', function () {
                 expect('./files/dist/task-1.js').to.be.a.file().and.not.empty;
                 expect('./files/dist/task-1.min.js').to.be.a.file().and.not.empty;
 
-                cripUtil.unlinkDir('./files');
+                cripCore.unlinkDir('./files');
                 done();
             });
 

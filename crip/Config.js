@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 var extend = require('extend');
 
-var crip = require('./crip');
+var crip = require('crip-core');
 
 function Config(defaults) {
 

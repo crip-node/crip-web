@@ -1,5 +1,5 @@
 var utils = require('./../utils');
-var crip = require('./../crip');
+var crip = require('crip-core');
 var webpack = require('webpack-stream');
 
 function Webpack(gulp, config, cripweb, registerTask) {

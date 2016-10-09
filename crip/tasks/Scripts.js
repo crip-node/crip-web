@@ -6,7 +6,7 @@ var uglify = require('gulp-uglify');
 var flatmap = require('gulp-flatmap');
 var sourcemaps = require('gulp-sourcemaps');
 
-var crip = require('./../crip');
+var crip = require('crip-core');
 var utils = require('./../utils');
 
 function Scripts(gulp, config, cripweb, registerTask) {

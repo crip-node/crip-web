@@ -1,4 +1,4 @@
-var crip = require('./crip');
+var crip = require('crip-core');
 var events = require('events');
 
 /**

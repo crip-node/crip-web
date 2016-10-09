@@ -1,7 +1,6 @@
 var colors = require('colors');
 var path = require('path');
-
-var crip = require('./crip');
+var crip = require('crip-core');
 
 var utils = {
 

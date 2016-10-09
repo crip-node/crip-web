@@ -3,18 +3,18 @@ var sinon = require('sinon');
 var expect = chai.expect;
 var fs = require('fs');
 var gulp = require('gulp');
-var cripUtil = require('./../crip/crip');
+var cripCore = require('crip-core');
 
 chai.use(require('chai-fs'));
 chai.use(require('sinon-chai'));
 
 describe('index #scripts', function () {
     beforeEach(function () {
-        sinon.stub(cripUtil, 'log');
+        sinon.stub(cripCore, 'log');
     });
 
     afterEach(function () {
-        cripUtil.log.restore();
+        cripCore.log.restore();
     });
 
     it('should copy and minify two files', function (done) {
@@ -23,7 +23,7 @@ describe('index #scripts', function () {
         var methods;
 
         if (fs.existsSync('./files-s-1'))
-            cripUtil.unlinkDir('./files-s-1');
+            cripCore.unlinkDir('./files-s-1');
         fs.mkdirSync('./files-s-1');
         fs.writeFileSync('./files-s-1/o.js', '(function(crip){ \'use strict\'; crip.noop = function() {return arguments;} })(window.crip || (window.crip = {}))');
         fs.writeFileSync('./files-s-1/p.js', '(function(crip){ \'use strict\'; console.log(crip.noop()) })(window.crip || (window.crip = {}))');
@@ -45,7 +45,7 @@ describe('index #scripts', function () {
             expect('./files-s-1/dist/p.js').to.be.a.file();
             expect('./files-s-1/dist/p.min.js').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-s-1');
+            cripCore.unlinkDir('./files-s-1');
             done();
         });
 
@@ -58,7 +58,7 @@ describe('index #scripts', function () {
         var methods;
 
         if (fs.existsSync('./files-s-2'))
-            cripUtil.unlinkDir('./files-s-2');
+            cripCore.unlinkDir('./files-s-2');
         fs.mkdirSync('./files-s-2');
         fs.writeFileSync('./files-s-2/q.js', '(function(crip){ \'use strict\'; crip.noop = function() {return arguments;} })(window.crip || (window.crip = {}))');
         fs.writeFileSync('./files-s-2/r.js', '(function(crip){ \'use strict\'; console.log(crip.noop()) })(window.crip || (window.crip = {}))');
@@ -77,7 +77,7 @@ describe('index #scripts', function () {
             expect('./files-s-2/dist/task-1-file.min.js').to.have.content.that.match(/\.noop\=function/);
             expect('./files-s-2/dist/task-1-file.min.js').to.have.content.that.match(/\.noop\(\)/);
 
-            cripUtil.unlinkDir('./files-s-2');
+            cripCore.unlinkDir('./files-s-2');
             done();
         });
 
@@ -90,7 +90,7 @@ describe('index #scripts', function () {
         var methods;
 
         if (fs.existsSync('./files-s-3'))
-            cripUtil.unlinkDir('./files-s-3');
+            cripCore.unlinkDir('./files-s-3');
         fs.mkdirSync('./files-s-3');
         fs.writeFileSync('./files-s-3/s.js', '(function(crip){ \'use strict\'; crip.noop = function() {return arguments;} })(window.crip || (window.crip = {}))');
         fs.writeFileSync('./files-s-3/t.js', '(function(crip){ \'use strict\'; console.log(crip.noop()) })(window.crip || (window.crip = {}))');
@@ -104,7 +104,7 @@ describe('index #scripts', function () {
             expect('./files-s-3/dist/task-1.js').to.be.a.file().and.not.empty;
             expect('./files-s-3/dist/task-1.min.js').to.be.a.file().and.not.empty;
 
-            cripUtil.unlinkDir('./files-s-3');
+            cripCore.unlinkDir('./files-s-3');
             done();
         });
 
@@ -117,7 +117,7 @@ describe('index #scripts', function () {
         var methods;
 
         if (fs.existsSync('./files-s-4'))
-            cripUtil.unlinkDir('./files-s-4');
+            cripCore.unlinkDir('./files-s-4');
         fs.mkdirSync('./files-s-4');
         fs.writeFileSync('./files-s-4/u.js', '(function(crip){ \'use strict\'; crip.noop = function() {return arguments;} })(window.crip || (window.crip = {}))');
         fs.writeFileSync('./files-s-4/v.js', '(function(crip){ \'use strict\'; console.log(crip.noop()) })(window.crip || (window.crip = {}))');
@@ -131,7 +131,7 @@ describe('index #scripts', function () {
             expect('./files-s-4/dist/task-1.js').to.be.a.file().and.not.empty;
             expect('./files-s-4/dist/task-1.min.js').to.not.be.a.path();
 
-            cripUtil.unlinkDir('./files-s-4');
+            cripCore.unlinkDir('./files-s-4');
             done();
         });
 
@@ -143,7 +143,7 @@ describe('index #scripts', function () {
         var methods;
 
         if (fs.existsSync('./files-s-5'))
-            cripUtil.unlinkDir('./files-s-5');
+            cripCore.unlinkDir('./files-s-5');
         fs.mkdirSync('./files-s-5');
         fs.writeFileSync('./files-s-5/w.js', '(function(crip){ \'use strict\'; crip.noop = function() {return arguments;} })(window.crip || (window.crip = {}))');
         fs.writeFileSync('./files-s-5/x.js', '(function(crip){ \'use strict\'; console.log(crip.noop()) })(window.crip || (window.crip = {}))');
@@ -157,7 +157,7 @@ describe('index #scripts', function () {
             expect('./files-s-5/dist/true.js').to.be.a.file().and.not.empty;
             expect('./files-s-5/dist/true.min.js').to.be.a.file().and.not.empty;
 
-            cripUtil.unlinkDir('./files-s-5');
+            cripCore.unlinkDir('./files-s-5');
             done();
         });
 

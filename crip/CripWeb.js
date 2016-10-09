@@ -1,5 +1,5 @@
 var utils = require('./utils');
-var crip = require('./crip');
+var crip = require('crip-core');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 

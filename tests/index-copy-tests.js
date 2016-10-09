@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var expect = chai.expect;
 var fs = require('fs');
 var gulp = require('gulp');
-var cripUtil = require('./../crip/crip');
+var cripCore = require('crip-core');
 
 chai.use(require('chai-fs'));
 chai.use(require('sinon-chai'));
@@ -11,11 +11,11 @@ chai.use(require('sinon-chai'));
 describe('index #copy', function () {
 
     beforeEach(function () {
-        sinon.stub(cripUtil, 'log');
+        sinon.stub(cripCore, 'log');
     });
 
     afterEach(function () {
-        cripUtil.log.restore();
+        cripCore.log.restore();
     });
 
     it('should copy single file if globs is direct file path', function (done) {
@@ -23,7 +23,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-1'))
-            cripUtil.unlinkDir('./files-c-1');
+            cripCore.unlinkDir('./files-c-1');
         fs.mkdirSync('./files-c-1');
         fs.writeFileSync('./files-c-1/a.txt', 'a.txt');
 
@@ -38,7 +38,7 @@ describe('index #copy', function () {
             expect('./files-c-1/dist/').to.be.a.directory().and.not.empty;
             expect('./files-c-1/dist/a.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-1');
+            cripCore.unlinkDir('./files-c-1');
             done();
         });
 
@@ -50,7 +50,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-2'))
-            cripUtil.unlinkDir('./files-c-2');
+            cripCore.unlinkDir('./files-c-2');
         fs.mkdirSync('./files-c-2');
         fs.mkdirSync('./files-c-2/sub');
         fs.writeFileSync('./files-c-2/sub/b.txt', 'b.txt');
@@ -63,7 +63,7 @@ describe('index #copy', function () {
             expect('./files-c-2/dist/').to.be.a.directory().and.not.empty;
             expect('./files-c-2/dist/b.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-2');
+            cripCore.unlinkDir('./files-c-2');
             done();
         });
 
@@ -75,7 +75,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-3'))
-            cripUtil.unlinkDir('./files-c-3');
+            cripCore.unlinkDir('./files-c-3');
         fs.mkdirSync('./files-c-3');
         fs.writeFileSync('./files-c-3/c.txt', 'c.txt');
         fs.writeFileSync('./files-c-3/d.txt', 'd.txt');
@@ -90,7 +90,7 @@ describe('index #copy', function () {
             expect('./files-c-3/dist/c.txt').to.be.a.file();
             expect('./files-c-3/dist/d.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-3');
+            cripCore.unlinkDir('./files-c-3');
             done();
         });
     });
@@ -106,7 +106,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-4'))
-            cripUtil.unlinkDir('./files-c-4');
+            cripCore.unlinkDir('./files-c-4');
         fs.mkdirSync('./files-c-4');
         fs.writeFileSync('./files-c-4/e.txt', 'e.txt');
         fs.writeFileSync('./files-c-4/f.txt', 'f.txt');
@@ -121,7 +121,7 @@ describe('index #copy', function () {
             expect('./files-c-4/dist/e.txt').to.be.a.file();
             expect('./files-c-4/dist/f.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-4');
+            cripCore.unlinkDir('./files-c-4');
             done();
         });
     });
@@ -131,7 +131,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-5'))
-            cripUtil.unlinkDir('./files-c-5');
+            cripCore.unlinkDir('./files-c-5');
         fs.mkdirSync('./files-c-5');
         fs.writeFileSync('./files-c-5/g.txt', 'g.txt');
         fs.writeFileSync('./files-c-5/h.txt', 'h.txt');
@@ -150,7 +150,7 @@ describe('index #copy', function () {
             expect('./files-c-5/dist/g.txt').to.be.a.file();
             expect('./files-c-5/dist/h.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-5');
+            cripCore.unlinkDir('./files-c-5');
             done();
         });
 
@@ -168,7 +168,7 @@ describe('index #copy', function () {
         };
 
         if (fs.existsSync('./files-c-6'))
-            cripUtil.unlinkDir('./files-c-6');
+            cripCore.unlinkDir('./files-c-6');
         fs.mkdirSync('./files-c-6');
         fs.writeFileSync('./files-c-6/i.txt', 'i.txt');
         fs.writeFileSync('./files-c-6/j.txt', 'j.txt');
@@ -184,7 +184,7 @@ describe('index #copy', function () {
             expect('./files-c-6/dist/i.txt').to.be.a.file();
             expect('./files-c-6/dist/j.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-6');
+            cripCore.unlinkDir('./files-c-6');
             done();
         });
 
@@ -196,7 +196,7 @@ describe('index #copy', function () {
         var methods;
 
         if (fs.existsSync('./files-c-7'))
-            cripUtil.unlinkDir('./files-c-7');
+            cripCore.unlinkDir('./files-c-7');
         fs.mkdirSync('./files-c-7');
         fs.writeFileSync('./files-c-7/k.txt', 'k.txt');
         fs.writeFileSync('./files-c-7/l.txt', 'l.txt');
@@ -221,7 +221,7 @@ describe('index #copy', function () {
             expect('./files-c-7/dist/k.txt').to.be.a.file();
             expect('./files-c-7/dist/l.txt').to.be.a.file();
 
-            cripUtil.unlinkDir('./files-c-7');
+            cripCore.unlinkDir('./files-c-7');
             done();
         });
 

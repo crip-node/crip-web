@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "colors": "^1.1",
-    "extend": "^3.0",
+    "crip-core": "^1.0.0",
     "gulp": "^3.9",
     "gulp-batch": "^1.0",
     "gulp-concat": "^2.6",

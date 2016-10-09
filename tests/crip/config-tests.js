@@ -4,7 +4,7 @@ var sinon = require('sinon');
 var events = require('events');
 var fs = require('fs');
 
-var crip = require('./../../crip/crip');
+var crip = require('crip-core');
 
 var Config = require('./../../crip/Config');
 
@@ -87,5 +87,7 @@ describe('Config', function () {
         var config = new Config('./tests/files/config-tests-1.json');
 
         expect(config).to.have.property('test1', 'test-1-value');
+        crip.unlinkDir('./tests/files');
+
     })
 })

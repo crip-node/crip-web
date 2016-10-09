@@ -1,5 +1,5 @@
 var utils = require('./../utils');
-var crip = require('./../crip');
+var crip = require('crip-core');
 
 function Copy(gulp, config, cripweb, registerTask) {
 
