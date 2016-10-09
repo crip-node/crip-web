@@ -1,6 +1,6 @@
 var utils = require('./../utils');
 var crip = require('./../crip');
-var webpack = require('webpack');
+var webpack = require('webpack-stream');
 
 function Webpack(gulp, config, cripweb, registerTask) {
 
@@ -50,10 +50,11 @@ function Webpack(gulp, config, cripweb, registerTask) {
         utils.appendBase(options);
 
         function gulpAction() {
+            var webpackAction = function (err, stats) {
+                crip.log(crip.supplant('[webpack:{name}]', { name: taskName }), stats.toString({ colors: true }));
+            };
             var result = gulp.src(options.src)
-                .pipe(webpack(options.config), function(err, stats) {
-                    crip.log(crip.supplant('[webpack:{name}]', { name: taskName }), stats.toString());
-                })
+                .pipe(webpack(options.config, null, webpackAction))
                 .pipe(gulp.dest(options.output));
 
             return result;

@@ -1,6 +1,6 @@
 {
   "name": "cripweb",
-  "version": "3.0.5",
+  "version": "3.1.0",
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "index.js",
   "scripts": {
@@ -13,17 +13,12 @@
   "keywords": [
     "crip",
     "gulp api",
-    "autoprefixer",
-    "cssnano",
-    "gulp",
-    "concat",
-    "postcss",
-    "rename",
-    "sass",
-    "sourcemaps",
+    "webpack",
+    "minify",
     "uglify",
-    "watch",
-    "pixrem"
+    "concat",
+    "sourcemaps",
+    "watch"
   ],
   "author": {
     "name": "Igors Krasjukovs",
@@ -44,7 +39,7 @@
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3",
     "path": "^0.12",
-    "webpack": "^1.13.2"
+    "webpack-stream": "^3.2"
   },
   "readme": "# cripweb \r\n Crip fluent API for Gulp\r\n",
   "readmeFilename": "README.md",
@@ -54,8 +49,8 @@
   "homepage": "https://github.com/crip-node/crip-web#readme",
   "devDependencies": {
     "chai": "^3.5",
-    "chai-fs": "^0.1.0",
+    "chai-fs": "^0.1",
     "sinon": "^1.17",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8"
   }
 }
