@@ -1,7 +1,6 @@
 var utils = require('./../utils');
 var crip = require('./../crip');
 var watch = require('gulp-watch');
-var batch = require('gulp-batch');
 
 function Watch(gulp, config, cripweb, registerTask) {
 
@@ -37,9 +36,11 @@ function Watch(gulp, config, cripweb, registerTask) {
         utils.appendBase(options);
 
         function gulpAction() {
-            var result = watch(options.src, batch(function (a, b) {
-                return gulp.start(deps, b);
-            }));
+            gulp.start(deps);
+
+            var result = watch(options.src, function () {
+                gulp.start(deps);
+            });
 
             return result;
         }
