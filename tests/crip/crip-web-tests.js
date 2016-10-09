@@ -20,18 +20,19 @@ describe('CripWeb', function () {
         expect(Object.keys(cripweb._activeTasks).length).to.equal(0);
 
         expect(cripweb).to.have.property('_methods');
-        expect(Object.keys(cripweb._methods).length).to.equal(4); // only copy 
+        expect(Object.keys(cripweb._methods).length).to.equal(5); // only copy 
     })
 
     it('getPublicMethods() should return methods object', function () {
         var cripweb = new CripWeb({}, {});
 
         var methods = cripweb.getPublicMethods();
-        expect(Object.keys(methods).length).to.equal(4);
+        expect(Object.keys(methods).length).to.equal(5);
         expect(methods).to.have.property('config');
         expect(methods).to.have.property('define');
         expect(methods).to.have.property('copy');
         expect(methods).to.have.property('watch');
+        expect(methods).to.have.property('scripts');
     })
 
     describe('#addTask', function () {

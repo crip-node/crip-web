@@ -8,6 +8,7 @@ var Config = require('./Config');
 
 var Copy = require('./tasks/Copy');
 var Watch = require('./tasks/Watch');
+var Scripts = require('./tasks/Scripts');
 
 
 /**
@@ -34,6 +35,7 @@ function CripWeb(gulp, config) {
     function defineDefaultMethods() {
         self._methods.define('copy', Copy);
         self._methods.define('watch', Watch);
+        self._methods.define('scripts', Scripts);
     }
 }
 

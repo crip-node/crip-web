@@ -30,6 +30,7 @@ describe('crip', function () {
         expect(crip.isObject('string')).to.not.be.ok;
         expect(crip.isObject(1)).to.not.be.ok;
         expect(crip.isObject(NaN)).to.not.be.ok;
+        expect(crip.isObject(true)).to.not.be.ok;
     })
 
     it('isString() should return true an passing valid string object', function () {
@@ -40,6 +41,7 @@ describe('crip', function () {
         expect(crip.isString([])).to.not.be.ok;
         expect(crip.isString(crip.noop)).to.not.be.ok;
         expect(crip.isString(null)).to.not.be.ok;
+        expect(crip.isString(true)).to.not.be.ok;
     })
 
     it('isNumber() should return true an passing valid number', function () {
@@ -51,6 +53,7 @@ describe('crip', function () {
         expect(crip.isNumber(crip.noop)).to.not.be.ok;
         expect(crip.isNumber(null)).to.not.be.ok;
         expect(crip.isNumber({})).to.not.be.ok;
+        expect(crip.isNumber(true)).to.not.be.ok;
     })
 
     it('isArray() should return true on valid array object', function () {
@@ -63,6 +66,7 @@ describe('crip', function () {
         expect(crip.isObject(1)).to.not.be.ok;
         expect(crip.isObject(NaN)).to.not.be.ok;
         expect(crip.isObject(crip.noop)).to.not.be.ok;
+        expect(crip.isObject(true)).to.not.be.ok;
     })
 
     it('isFunction() should return true on valid array object', function () {
@@ -75,6 +79,20 @@ describe('crip', function () {
         expect(crip.isFunction('string')).to.not.be.ok;
         expect(crip.isFunction(1)).to.not.be.ok;
         expect(crip.isFunction(NaN)).to.not.be.ok;
+        expect(crip.isFunction(true)).to.not.be.ok;
+    })
+
+    it('isBoolean() should return true on valid array object', function () {
+        expect(crip.isBoolean(true)).to.be.ok;
+
+        expect(crip.isBoolean([])).to.not.be.ok;
+        expect(crip.isBoolean({})).to.not.be.ok;
+        expect(crip.isBoolean({}.c)).to.not.be.ok;
+        expect(crip.isBoolean(null)).to.not.be.ok;
+        expect(crip.isBoolean('string')).to.not.be.ok;
+        expect(crip.isBoolean(1)).to.not.be.ok;
+        expect(crip.isBoolean(NaN)).to.not.be.ok;
+        expect(crip.isBoolean(crip.noop)).to.not.be.ok;
     })
 
     it('toInt() should convert string to integer', function () {

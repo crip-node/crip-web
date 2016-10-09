@@ -80,6 +80,16 @@ var crip = {
     },
 
     /**
+     * Determines if a reference is a `Boolean`.
+     * 
+     * @param {any} value Reference to check.
+     * @returns {boolean} True if `value` is a `Boolean`.
+     */
+    isBoolean: function (value) {
+        return typeof value === 'boolean';
+    },
+
+    /**
      * Parse string to int.
      * 
      * @param {String} str String to parse.
