@@ -36,14 +36,15 @@
     "extend": "^3.0",
     "gulp": "^3.9",
     "gulp-batch": "^1.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-foreach": "^0.1.0",
+    "gulp-concat": "^2.6",
+    "gulp-foreach": "^0.1",
     "gulp-if": "^2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6",
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3",
-    "path": "^0.12"
+    "path": "^0.12",
+    "webpack": "^1.13.2"
   },
   "readme": "# cripweb \r\n Crip fluent API for Gulp\r\n",
   "readmeFilename": "README.md",
