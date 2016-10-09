@@ -37,6 +37,18 @@ function CripMethods(gulp, config, task, cripweb) {
             return true;
         }
     }
+
+    /**
+     * Public method to include gulp tasks
+     * 
+     * @param {any} taskName Name of the task to include in crip default command
+     * @return {CripMethods}
+     */
+    this.addDefault = function (taskName) {
+        cripweb._beforeDefault.push(taskName);
+
+        return this;
+    }
 }
 
 /**

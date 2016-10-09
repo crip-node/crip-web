@@ -25,6 +25,7 @@ function CripWeb(gulp, config) {
     this._tasks = {};
     this._activeTasks = {};
     this._conf = new Config({});
+    this._beforeDefault = new Array();
     this._methods = new Methods(this._gulp, this._conf, this.addTask, this);
 
     defineDefaultMethods();
@@ -112,8 +113,9 @@ CripWeb.prototype.defineTaskInGulp = function (task) {
  * 
  * @param {String} taskId Unique name for gulp task
  * @param {Array|Object} tasks Collection of crip Tasks to be executed under gulp task 
+ * @param {Array} otherTasks Collection of tasks defined outside crip recepie
  */
-CripWeb.prototype._registerGulpTask = function (taskId, tasks) {
+CripWeb.prototype._registerGulpTask = function (taskId, tasks, otherTasks) {
     var self = this;
     var gulp = this._gulp;
     var methods = this._methods;
@@ -124,7 +126,9 @@ CripWeb.prototype._registerGulpTask = function (taskId, tasks) {
         methods.emit(name);
     };
 
-    gulp.task(taskId, function (done) {
+    otherTasks = otherTasks || [];
+
+    gulp.task(taskId, otherTasks, function (done) {
         var emitDone = function (id) {
             emit(id);
 
@@ -172,7 +176,7 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
             defaultTasks[task.id] = task;
     });
 
-    this._registerGulpTask('default', defaultTasks);
+    this._registerGulpTask('default', defaultTasks, this._beforeDefault);
 
     // TODO: find a way how to avoid this duplicate of '_registerGulpTask' method
     this._gulp.task('watch-glob', function () {
