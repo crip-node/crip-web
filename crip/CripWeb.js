@@ -10,7 +10,6 @@ var Config = require('./Config');
 var Copy = require('./tasks/Copy');
 var Watch = require('./tasks/Watch');
 var Scripts = require('./tasks/Scripts');
-var Webpack = require('./tasks/Webpack');
 
 
 /**
@@ -39,7 +38,6 @@ function CripWeb(gulp, config) {
         self._methods.define('copy', Copy);
         self._methods.define('watch', Watch);
         self._methods.define('scripts', Scripts);
-        self._methods.define('webpack', Webpack);
     }
 }
 

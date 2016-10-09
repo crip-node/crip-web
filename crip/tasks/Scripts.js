@@ -7,9 +7,8 @@ var flatmap = require('gulp-flatmap');
 var sourcemaps = require('gulp-sourcemaps');
 
 var crip = require('crip-core');
-var utils = require('./../utils');
 
-function Scripts(gulp, config, cripweb, registerTask) {
+function Scripts(gulp, config, cripweb, registerTask, utils) {
     this.config = config;
 
     this.fn = function (taskName, globs, outputPath, outputFileName, prependPath) {

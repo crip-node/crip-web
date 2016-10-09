@@ -1,5 +1,6 @@
 var crip = require('crip-core');
 var events = require('events');
+var utils = require('./Utils');
 
 /**
  * Creates new instance of crip public method holder
@@ -18,7 +19,7 @@ function CripMethods(gulp, config, task, cripweb) {
      * @param {Callable} taskDefinition.fn
      */
     this.define = function (name, taskConstructor) {
-        var taskDefinition = new taskConstructor(gulp, config, cripweb, task);
+        var taskDefinition = new taskConstructor(gulp, config, cripweb, task, utils);
         if (this[name])
             throw new Error(crip.supplant('Crip already contains method with name "{method}"!', { method: name }));
 

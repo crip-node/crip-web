@@ -20,7 +20,7 @@ describe('Scripts', function () {
 
     it('costructor() should define default methods', function () {
 
-        var scripts = new Scripts('gulp', 'config', 'cripweb', 'registerTask');
+        var scripts = new Scripts('gulp', 'config', 'cripweb', 'registerTask', utils);
 
         expect(scripts).to.have.property('fn');
         expect(scripts).to.have.property('configure');
@@ -29,7 +29,7 @@ describe('Scripts', function () {
 
     it('configure() should call config set method', function () {
         var config = { set: sinon.spy() };
-        var scripts = new Scripts('gulp', config, 'cripweb', 'registerTask');
+        var scripts = new Scripts('gulp', config, 'cripweb', 'registerTask', utils);
 
         scripts.configure();
 
@@ -46,7 +46,7 @@ describe('Scripts', function () {
     it('isInDefault() should return value from config get method', function () {
         var config = { get: sinon.stub() };
         config.get.returns(true);
-        var scripts = new Scripts('gulp', config, 'cripweb', 'registerTask');
+        var scripts = new Scripts('gulp', config, 'cripweb', 'registerTask', utils);
 
         var result = scripts.isInDefault();
 
@@ -58,7 +58,7 @@ describe('Scripts', function () {
     describe('#fn', function () {
 
         it('should be a function', function () {
-            var scripts = new Scripts('gulp', 'config', 'cripweb', 'registerTask');
+            var scripts = new Scripts('gulp', 'config', 'cripweb', 'registerTask', utils);
 
             expect(scripts.fn).to.be.a('function');
         })
@@ -67,7 +67,7 @@ describe('Scripts', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs');
 
@@ -81,7 +81,7 @@ describe('Scripts', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: sinon.stub().returns(123) };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             var result = scripts.fn('taskName', 'globs');
 
@@ -92,7 +92,7 @@ describe('Scripts', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', 'outputPath', 'outputFileName', 'prependPath');
 
@@ -108,7 +108,7 @@ describe('Scripts', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', 'outputPath', 'outputFileName');
 
@@ -124,7 +124,7 @@ describe('Scripts', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', 'fileName');
 
@@ -140,7 +140,7 @@ describe('Scripts', function () {
             var conf = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', conf, cripweb, noop);
+            var scripts = new Scripts('gulp', conf, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', 'outputPath', false, 'prependPath');
 
@@ -156,7 +156,7 @@ describe('Scripts', function () {
             var conf = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', conf, cripweb, noop);
+            var scripts = new Scripts('gulp', conf, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', 'outputPath', true, 'prependPath');
 
@@ -172,7 +172,7 @@ describe('Scripts', function () {
             var conf = { get: sinon.stub().returns('def') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', conf, cripweb, noop);
+            var scripts = new Scripts('gulp', conf, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs', true, 'prependPath');
 
@@ -188,7 +188,7 @@ describe('Scripts', function () {
             var config = { get: sinon.stub().returns('x') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var scripts = new Scripts('gulp', config, cripweb, noop);
+            var scripts = new Scripts('gulp', config, cripweb, noop, utils);
 
             scripts.fn('taskName', 'globs');
 
@@ -201,7 +201,7 @@ describe('Scripts', function () {
         })
 
         it('should throw error if globs is not presented', function () {
-            var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop');
+            var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 scripts.fn('taskName');
@@ -211,7 +211,7 @@ describe('Scripts', function () {
         })
 
         it('should throw error if name is not string with length > 3', function () {
-            var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop');
+            var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 scripts.fn({}, 'globs');

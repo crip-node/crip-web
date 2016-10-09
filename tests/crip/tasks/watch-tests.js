@@ -20,17 +20,39 @@ describe('Watch', function () {
 
     it('costructor() should define default methods', function () {
 
-        var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask');
+        var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask', utils);
 
         expect(watch).to.have.property('fn');
         expect(watch).to.have.property('configure');
         expect(watch).to.have.property('isInDefault');
     })
 
+    it('configure() should call config set method', function () {
+        var config = { set: sinon.spy() };
+        var watch = new Watch('gulp', config, 'cripweb', 'registerTask', utils);
+
+        watch.configure();
+
+        expect(config.set).to.have.been.calledOnce;
+        expect(config.set).to.have.been.calledWithExactly('watch', { base: '', isInDefaults: false });
+    })
+
+    it('isInDefault() should return value from config get method', function () {
+        var config = { get: sinon.stub() };
+        config.get.returns(true);
+        var watch = new Watch('gulp', config, 'cripweb', 'registerTask', utils);
+
+        var result = watch.isInDefault();
+
+        expect(config.get).to.have.been.calledOnce;
+        expect(config.get).to.have.been.calledWithExactly('watch.isInDefaults');
+        expect(result).to.be.equal(true);
+    });
+
     describe('#fn', function () {
 
         it('should be a function', function () {
-            var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask');
+            var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask', utils);
 
             expect(watch.fn).to.be.a('function');
         })
@@ -39,7 +61,7 @@ describe('Watch', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var watch = new Watch('gulp', config, cripweb, noop);
+            var watch = new Watch('gulp', config, cripweb, noop, utils);
 
             watch.fn('taskName', 'globs', 'deps');
 
@@ -51,7 +73,7 @@ describe('Watch', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: sinon.stub().returns(123) };
-            var watch = new Watch('gulp', config, cripweb, noop);
+            var watch = new Watch('gulp', config, cripweb, noop, utils);
 
             var result = watch.fn('taskName', 'globs', 'deps');
 
@@ -62,7 +84,7 @@ describe('Watch', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var watch = new Watch('gulp', config, cripweb, noop);
+            var watch = new Watch('gulp', config, cripweb, noop, utils);
 
             watch.fn('taskName', 'globs', 'deps', 'prependPath');
 
@@ -74,7 +96,7 @@ describe('Watch', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var watch = new Watch('gulp', config, cripweb, noop);
+            var watch = new Watch('gulp', config, cripweb, noop, utils);
 
             watch.fn('taskName', 'globs', 'outputPath');
 
@@ -113,27 +135,5 @@ describe('Watch', function () {
         })
 
     })
-
-    it('configure() should call config set method', function () {
-        var config = { set: sinon.spy() };
-        var watch = new Watch('gulp', config, 'cripweb', 'registerTask');
-
-        watch.configure();
-
-        expect(config.set).to.have.been.calledOnce;
-        expect(config.set).to.have.been.calledWithExactly('watch', { base: '', isInDefaults: false });
-    })
-
-    it('isInDefault() should return value from config get method', function () {
-        var config = { get: sinon.stub() };
-        config.get.returns(true);
-        var watch = new Watch('gulp', config, 'cripweb', 'registerTask');
-
-        var result = watch.isInDefault();
-
-        expect(config.get).to.have.been.calledOnce;
-        expect(config.get).to.have.been.calledWithExactly('watch.isInDefaults');
-        expect(result).to.be.equal(true);
-    });
 
 })

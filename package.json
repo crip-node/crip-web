@@ -1,6 +1,6 @@
 {
   "name": "cripweb",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,6 @@
   "keywords": [
     "crip",
     "gulp api",
-    "webpack",
     "minify",
     "uglify",
     "concat",
@@ -37,9 +36,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6",
     "gulp-uglify": "^2.0.0",
-    "gulp-watch": "^4.3",
-    "path": "^0.12",
-    "webpack-stream": "^3.2"
+    "gulp-watch": "^4.3"
   },
   "readme": "# cripweb \r\n Crip fluent API for Gulp\r\n",
   "readmeFilename": "README.md",

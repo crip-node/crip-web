@@ -1,8 +1,7 @@
-var utils = require('./../utils');
 var crip = require('crip-core');
 var watch = require('gulp-watch');
 
-function Watch(gulp, config, cripweb, registerTask) {
+function Watch(gulp, config, cripweb, registerTask, utils) {
 
     this.config = config;
 

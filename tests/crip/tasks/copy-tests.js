@@ -20,7 +20,7 @@ describe('Copy', function () {
 
     it('costructor() should define default methods', function () {
 
-        var copy = new Copy('gulp', 'config', 'cripweb', 'registerTask');
+        var copy = new Copy('gulp', 'config', 'cripweb', 'registerTask', utils);
 
         expect(copy).to.have.property('fn');
         expect(copy).to.have.property('configure');
@@ -30,7 +30,7 @@ describe('Copy', function () {
     describe('#fn', function () {
 
         it('should be a function', function () {
-            var copy = new Copy('gulp', 'config', 'cripweb', 'registerTask');
+            var copy = new Copy('gulp', 'config', 'cripweb', 'registerTask', utils);
 
             expect(copy.fn).to.be.a('function');
         })
@@ -39,7 +39,7 @@ describe('Copy', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var copy = new Copy('gulp', config, cripweb, noop);
+            var copy = new Copy('gulp', config, cripweb, noop, utils);
 
             copy.fn('taskName', 'globs');
 
@@ -52,7 +52,7 @@ describe('Copy', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: sinon.stub().returns(123) };
-            var copy = new Copy('gulp', config, cripweb, noop);
+            var copy = new Copy('gulp', config, cripweb, noop, utils);
 
             var result = copy.fn('taskName', 'globs');
 
@@ -63,7 +63,7 @@ describe('Copy', function () {
             var config = { get: sinon.spy() };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var copy = new Copy('gulp', config, cripweb, noop);
+            var copy = new Copy('gulp', config, cripweb, noop, utils);
 
             copy.fn('taskName', 'globs', 'outputPath', 'prependPath');
 
@@ -75,7 +75,7 @@ describe('Copy', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var copy = new Copy('gulp', config, cripweb, noop);
+            var copy = new Copy('gulp', config, cripweb, noop, utils);
 
             copy.fn('taskName', 'globs', 'outputPath');
 
@@ -87,7 +87,7 @@ describe('Copy', function () {
             var config = { get: sinon.stub().returns('') };
             var noop = function () { };
             var cripweb = { getPublicMethods: noop };
-            var copy = new Copy('gulp', config, cripweb, noop);
+            var copy = new Copy('gulp', config, cripweb, noop, utils);
 
             copy.fn('taskName', 'globs');
 
@@ -96,7 +96,7 @@ describe('Copy', function () {
         })
 
         it('should throw error if globs is not presented', function () {
-            var copy = new Copy('gulp', 'config', 'cripweb', 'noop');
+            var copy = new Copy('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 copy.fn('taskName');
@@ -106,7 +106,7 @@ describe('Copy', function () {
         })
 
         it('should throw error if name is not string with length > 3', function () {
-            var copy = new Copy('gulp', 'config', 'cripweb', 'noop');
+            var copy = new Copy('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 copy.fn({}, 'globs');
@@ -119,7 +119,7 @@ describe('Copy', function () {
 
     it('configure() should call config set method', function () {
         var config = { set: sinon.spy() };
-        var copy = new Copy('gulp', config, 'cripweb', 'registerTask');
+        var copy = new Copy('gulp', config, 'cripweb', 'registerTask', utils);
 
         copy.configure();
 
@@ -130,7 +130,7 @@ describe('Copy', function () {
     it('isInDefault() should return value from config get method', function () {
         var config = { get: sinon.stub() };
         config.get.returns(true);
-        var copy = new Copy('gulp', config, 'cripweb', 'registerTask');
+        var copy = new Copy('gulp', config, 'cripweb', 'registerTask', utils);
 
         var result = copy.isInDefault();
 
