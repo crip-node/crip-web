@@ -152,6 +152,22 @@ describe('Scripts', function () {
             });
         })
 
+        it('should call utils.appendBase with concat: true if file name is as boolean true and file name from task name', function () {
+            var conf = { get: sinon.stub().returns('') };
+            var noop = function () { };
+            var cripweb = { getPublicMethods: noop };
+            var scripts = new Scripts('gulp', conf, cripweb, noop);
+
+            scripts.fn('taskName', 'globs', 'outputPath', true, 'prependPath');
+
+            expect(utils.appendBase).to.have.been.calledOnce;
+            expect(utils.appendBase).to.have.been.calledWithExactly({
+                base: "prependPath", concat: true, output: "outputPath",
+                sourcemaps: "", src: "globs", uglify: "",
+                outputFile: { basename: "taskName", extname: ".js" },
+            });
+        })
+
         it('should call utils.appendBase with default src if boolean is third parameter', function () {
             var conf = { get: sinon.stub().returns('def') };
             var noop = function () { };

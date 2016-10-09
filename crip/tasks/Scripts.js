@@ -21,7 +21,7 @@ function Scripts(gulp, config, cripweb, registerTask) {
 
 
         // use name from parameters or task name;
-        var fileName = outputFileName ? path.basename(outputFileName, '.js') : taskName;
+        var fileName = outputFileName && !crip.isBoolean(outputFileName) ? path.basename(outputFileName, '.js') : taskName;
 
         var options = {
             src: globs,
