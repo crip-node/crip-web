@@ -54,7 +54,15 @@ Task.prototype.run = function (taskStack) {
         var currTime = new Date();
         return this._fn()
             .on('finish', function () {
-                crip.log('Finished CRIP', ("'" + id + "'"), 'after', (new Date() - currTime), 'ms');
+                var timeMetric = 'ms';
+                var time = (new Date() - currTime);
+
+                if (time > 999) {
+                    time = (time / 1000).toFixed(2);
+                    timeMetric = 's';
+                }
+
+                crip.log('Finished CRIP', ("'" + id + "'"), 'after', time, timeMetric);
                 taskStack[id]--;
                 self.emit('finish', id);
             })

@@ -156,10 +156,12 @@ CripWeb.prototype.definetaskInGulp = function (task) {
     var self = this;
 
     self._gulp.task(task.id, function (cb) {
+        var emiterCounter = 0;
         task.run(self._activeTasks);
         task.on('finish', function () {
             self.emitComplete(task.id);
-            cb();
+            if (++emiterCounter === 1)
+                cb();
         });
     });
 }
