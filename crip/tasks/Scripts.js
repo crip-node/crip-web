@@ -70,15 +70,22 @@ function Scripts(gulp, config, cripweb, registerTask, utils) {
                 .pipe(If(enableSourcemapsConcat, sourcemaps.write(options.sourcemaps.location, options.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
                 .pipe(If(enableUglifyNoConcat, flatmap(function (stream, file) {
-                    return stream.pipe(uglify(options.uglify.options))
+                    return stream.pipe(uglify(options.uglify.options).on('error', onError))
                         .pipe(rename({ suffix: '.min' }));
                 })))
                 .pipe(If(enableUglifyNoConcat, gulp.dest(options.output)))
-                .pipe(If(enableUglifyAndConcat, uglify(options.uglify.options)))
+                .pipe(
+                    If(enableUglifyAndConcat, 
+                    uglify(options.uglify.options).on('error', onError))
+                )
                 .pipe(If(enableUglifyAndConcat, rename({ suffix: '.min' })))
                 .pipe(If(enableUglifyAndConcat, gulp.dest(options.output)));
 
             return result;
+        }
+
+        function onError (err) {
+            console.log(err);
         }
 
         registerTask.apply(cripweb, ['scripts', taskName, gulpAction, options.src]);

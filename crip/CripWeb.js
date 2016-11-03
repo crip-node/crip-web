@@ -195,7 +195,8 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
         if (task.isInDefaults())
             self._beforeDefault.push(task.id);
 
-        if (task.globs)
+        // TODO: if task is from watch section, execute Children tasks instead of watch
+        if (task.globs && task.section !== 'watch')
             watchTasks.push(task.id);
     });
 
