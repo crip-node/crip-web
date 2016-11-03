@@ -18,14 +18,18 @@ describe('Watch', function () {
         utils.appendBase.restore();
     })
 
-    it('costructor() should define default methods', function () {
+    describe('#constructor', function () {
 
-        var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask', utils);
+        it('should define default methods', function () {
 
-        expect(watch).to.have.property('fn');
-        expect(watch).to.have.property('configure');
-        expect(watch).to.have.property('isInDefault');
-    })
+            var watch = new Watch('gulp', 'config', 'cripweb', 'registerTask', utils);
+
+            expect(watch).to.have.property('fn');
+            expect(watch).to.have.property('configure');
+            expect(watch).to.have.property('isInDefault');
+        });
+
+    });
 
     it('configure() should call config set method', function () {
         var config = { set: sinon.spy() };
@@ -133,6 +137,18 @@ describe('Watch', function () {
 
             expect(delegate).to.throw(Error, 'Watch task could not be executed without name! "name" argument as String with length > 3 is required.');
         })
+
+        it('should call registerTask with globs as sixt parameter', function () {
+            var config = { get: sinon.stub().returns('') };
+            var registerTask = sinon.spy();
+            var cripweb = { getPublicMethods: function () { } };
+            var watch = new Watch('gulp', config, cripweb, registerTask, utils);
+
+            watch.fn('taskName', 'globs', 'deps');
+
+            expect(registerTask).to.have.been.calledOnce;
+            expect(registerTask.getCall(0).args[5]).to.equal('deps');
+        });
 
     })
 

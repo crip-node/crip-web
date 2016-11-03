@@ -53,7 +53,7 @@ describe('CripWeb', function () {
         it('should add copy task as excluded from gulp default', function () {
             var cripweb = new CripWeb({}, { copy: { isInDefaults: false } });
             cripweb._Task = sinon.stub();
-            
+
             cripweb.addTask('copy', 'name', 'function', 'globs');
 
             expect(cripweb._Task).to.have.been.calledWithExactly('copy', 'name', 'function', 'globs', false, undefined);
@@ -82,7 +82,7 @@ describe('CripWeb', function () {
 
     })
 
-    it('defineRegisteredTasksInGulp() should call _gulp with all defined task id and sections', function () {
+    it('should call _gulp with all defined task id and sections', function () {
         var gulp = { task: sinon.spy() };
         var cripweb = new CripWeb(gulp, {});
         cripweb.addTask('copy', 'name', function () { }, 'globs');
@@ -94,15 +94,49 @@ describe('CripWeb', function () {
         expect(gulp.task.getCall(1).args[0]).to.be.equal('copy-name');
     })
 
-    it('defineDefaultTasksInGulp() should call _gulp with default and watch-glob', function () {
-        var gulp = { task: sinon.spy() };
-        var cripweb = new CripWeb(gulp, {});
+    describe('#defineDefaultTasksInGulp', function () {
 
-        cripweb.defineDefaultTasksInGulp();
+        it('should call _gulp with default and watch-glob', function () {
+            var gulp = { task: sinon.spy() };
+            var cripweb = new CripWeb(gulp, {});
 
-        expect(gulp.task).to.have.been.calledTwice;
-        expect(gulp.task.getCall(0).args[0]).to.be.equal('default');
-        expect(gulp.task.getCall(1).args[0]).to.be.equal('watch-glob');
+            cripweb.defineDefaultTasksInGulp();
+
+            expect(gulp.task).to.have.been.calledTwice;
+            expect(gulp.task.getCall(0).args[0]).to.be.equal('default');
+            expect(gulp.task.getCall(1).args[0]).to.be.equal('watch-glob');
+        })
+
+        it('should call _gulp with watch-glob/default and dependencies in them', function () {
+            var gulp = { task: sinon.spy() };
+            var cripweb = new CripWeb(gulp, {});
+            cripweb.addTask('copy', 'name', function () { }, 'globs');
+
+            cripweb.defineDefaultTasksInGulp();
+
+            expect(gulp.task).to.have.been.calledTwice;
+            expect(gulp.task.getCall(0).args[0]).to.be.equal('default');
+            expect(gulp.task.getCall(0).args[1].length).to.be.equal(1);
+            expect(gulp.task.getCall(0).args[1][0]).to.be.equal('copy-name');
+            expect(gulp.task.getCall(1).args[0]).to.be.equal('watch-glob');
+            expect(gulp.task.getCall(1).args[1].length).to.be.equal(1);
+            expect(gulp.task.getCall(1).args[1][0]).to.be.equal('copy-name');
+        })
+
+        it('should not add watch task in defaults precompiled list but inclide in watch-glob', function () {
+            var gulp = { task: sinon.spy() };
+            var cripweb = new CripWeb(gulp, {});
+            cripweb.addTask('watch', 'name', function () { }, 'globs', undefined, 'deps');
+            cripweb.defineDefaultTasksInGulp();
+
+            expect(gulp.task).to.have.been.calledTwice;
+            expect(gulp.task.getCall(0).args[0]).to.be.equal('default');
+            expect(gulp.task.getCall(0).args[1].length).to.be.equal(0);
+            expect(gulp.task.getCall(1).args[0]).to.be.equal('watch-glob');
+            expect(gulp.task.getCall(1).args[1].length).to.be.equal(1);
+            expect(gulp.task.getCall(1).args[1][0]).to.be.equal('deps');
+        })
+
     })
 
 })
