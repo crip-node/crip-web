@@ -10,7 +10,7 @@ var events = require('events');
  * @param {String|Array} globs
  * @param {Boolean?} includeInDefault
  */
-function Task(section, name, fn, globs, includeInDefault) {
+function Task(section, name, fn, globs, includeInDefault, deps) {
     this._fn = fn;
     this._includeInDefault = includeInDefault || false;
 
@@ -18,6 +18,19 @@ function Task(section, name, fn, globs, includeInDefault) {
     this.section = section;
     this.name = name;
     this.id = crip.supplant('{section}-{name}', this);
+    this.deps = deps;
+
+    // we need to ensure that deps is array to avoid repeated checks in other places
+    // deps allows us tu build task tree in gulp style dependencies
+    if (crip.isDefined(deps)) {
+        if (crip.isString(deps))
+            this.deps = new Array(deps);
+        else {
+            // if it is not an array, just ignore as nothing else will not work in this case
+            if (!crip.isArray(deps))
+                this.deps = undefined;
+        }
+    }
 }
 
 /**

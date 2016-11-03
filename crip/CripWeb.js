@@ -72,7 +72,7 @@ CripWeb.prototype.emitComplete = function (taskId) {
  * @param {String|Array} globs
  * @param {Boolean?} isDefault
  */
-CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault) {
+CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault, deps) {
     if (!this._tasks[method])
         this._tasks[method] = {};
 
@@ -85,7 +85,7 @@ CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault) {
             { section: method, name: name }));
 
     var includeInDefault = this.resolveDefault(method, isDefault);
-    var task = new this._Task(method, name, gulpFn, globs, includeInDefault);
+    var task = new this._Task(method, name, gulpFn, globs, includeInDefault, deps);
     this._tasks[method][name] = task;
 }
 
@@ -155,7 +155,17 @@ CripWeb.prototype.defineTasksInGulp = function (tasks) {
 CripWeb.prototype.definetaskInGulp = function (task) {
     var self = this;
 
-    self._gulp.task(task.id, function (cb) {
+    var deps = new Array();
+
+    // If section of this task is WATCH, define deps for it to be executed before 
+    // we start watchin this files on changes
+    if (task.section === 'watch' && crip.isDefined(task.deps))
+        crip.forEach(task.deps, function (dep) {
+            if (crip.isString(dep))
+                deps.push(dep);
+        });
+
+    self._gulp.task(task.id, deps, function (cb) {
         var emiterCounter = 0;
         task.run(self._activeTasks);
         task.on('finish', function () {
@@ -195,9 +205,18 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
         if (task.isInDefaults())
             self._beforeDefault.push(task.id);
 
-        // TODO: if task is from watch section, execute Children tasks instead of watch
-        if (task.globs && task.section !== 'watch')
+        // if the task is in WATCH section, it may rise infinete wait until inner watch is completed
+        // this stops parent wait to execute tasks, so we in else statemenet register DEPS to execute
+        // instead of whole watch
+        if (task.globs && task.section !== 'watch') {
             watchTasks.push(task.id);
+        }
+        else if (task.globs && task.section === 'watch' && crip.isDefined(task.deps)) {
+            // task DEPS always is an array, fo we safely can loop if it is defined
+            crip.forEach(task.deps, function (dep) {
+                watchTasks.push(dep);
+            })
+        }
     });
 
     this._gulp.task('default', self._beforeDefault, function (done) {
@@ -206,10 +225,14 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
 
     this._gulp.task('watch-glob', watchTasks, function () {
         self._loopTasks(function (task) {
+            // we have no need to watch watch tasks
             if (task.globs) {
-                watch(task.globs, batch(function () {
-                    return task.run(self._activeTasks);
-                }));
+                if (task.section === 'watch')
+                    task.run(self._activeTasks);
+                else
+                    watch(task.globs, batch(function () {
+                        return task.run(self._activeTasks);
+                    }));
             }
         })
     });

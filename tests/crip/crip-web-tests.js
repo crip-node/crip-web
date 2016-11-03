@@ -47,7 +47,7 @@ describe('CripWeb', function () {
             expect(cripweb._tasks).to.have.property('copy');
             expect(cripweb._tasks.copy).to.have.property('name');
             expect(cripweb._Task).to.have.been.calledOnce;
-            expect(cripweb._Task).to.have.been.calledWithExactly('copy', 'name', 'function', 'globs', true);
+            expect(cripweb._Task).to.have.been.calledWithExactly('copy', 'name', 'function', 'globs', true, undefined);
         })
 
         it('should add copy task as excluded from gulp default', function () {
@@ -56,7 +56,7 @@ describe('CripWeb', function () {
             
             cripweb.addTask('copy', 'name', 'function', 'globs');
 
-            expect(cripweb._Task).to.have.been.calledWithExactly('copy', 'name', 'function', 'globs', false);
+            expect(cripweb._Task).to.have.been.calledWithExactly('copy', 'name', 'function', 'globs', false, undefined);
         })
 
         it('should throw Error when task duplicate is added', function () {

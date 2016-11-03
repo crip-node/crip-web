@@ -35,8 +35,6 @@ function Watch(gulp, config, cripweb, registerTask, utils) {
         utils.appendBase(options);
 
         function gulpAction() {
-            gulp.start(deps);
-
             var result = watch(options.src, function () {
                 gulp.start(deps);
             });
@@ -44,7 +42,7 @@ function Watch(gulp, config, cripweb, registerTask, utils) {
             return result;
         }
 
-        registerTask.apply(cripweb, ['watch', taskName, gulpAction, options.src]);
+        registerTask.apply(cripweb, ['watch', taskName, gulpAction, options.src, undefined, deps]);
 
         return cripweb.getPublicMethods();
     }
