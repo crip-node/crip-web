@@ -1,11 +1,9 @@
 var chai = require('chai');
 var sinon = require('sinon');
-var fs = require('fs');
 var expect = chai.expect;
 
 chai.use(require('sinon-chai'));
 
-var Task = require('./../../crip/Task');
 var CripWeb = require('./../../crip/CripWeb');
 
 describe('CripWeb', function () {

@@ -6,7 +6,6 @@ var events = require('events');
 
 chai.use(require('sinon-chai'));
 
-var utils = require('./../../crip/utils');
 var Task = require('./../../crip/Task');
 
 describe('Task', function () {
