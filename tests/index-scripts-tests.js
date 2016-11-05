@@ -33,7 +33,7 @@ describe('index #scripts', function () {
 
             expect(crip.config.get('scripts.base')).to.be.equal('./files-s-1');
             expect(crip.config.get('scripts.output')).to.be.equal('./files-s-1/dist');
-        })
+        });
 
         expect(gulp.tasks).to.have.property('scripts');
         expect(gulp.tasks).to.have.property('scripts-task-1');
@@ -65,7 +65,7 @@ describe('index #scripts', function () {
 
         cripweb(gulp, conf)(function (crip) {
             methods = crip.scripts('task-1', ['q.js', 'r.js'], 'task-1-file.js');
-        })
+        });
 
         methods.on('finish-scripts-task-1', function () {
             expect('./files-s-2/dist/').to.be.a.directory().and.not.empty;
@@ -97,7 +97,7 @@ describe('index #scripts', function () {
 
         cripweb(gulp, conf)(function (crip) {
             methods = crip.scripts('task-1', ['s.js', 't.js'], true);
-        })
+        });
 
         methods.on('finish-scripts-task-1', function () {
             expect('./files-s-3/dist/').to.be.a.directory().and.not.empty;
@@ -124,7 +124,7 @@ describe('index #scripts', function () {
 
         cripweb(gulp, conf)(function (crip) {
             methods = crip.scripts('task-1', '*.js', true);
-        })
+        });
 
         methods.on('finish-scripts-task-1', function () {
             expect('./files-s-4/dist/').to.be.a.directory().and.not.empty;
@@ -150,7 +150,7 @@ describe('index #scripts', function () {
 
         cripweb(gulp)(function (crip) {
             methods = crip.scripts('task-1', './**/*.js', './files-s-5/dist', 'true', './files-s-5');
-        })
+        });
 
         methods.on('finish-scripts-task-1', function () {
             expect('./files-s-5/dist').to.be.a.directory().and.not.empty;

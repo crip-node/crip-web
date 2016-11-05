@@ -29,7 +29,7 @@ describe('index #copy', function () {
 
         cripweb(gulp)(function (crip) {
             methods = crip.copy('task-1', './files-c-1/a.txt', 'files-c-1/dist');
-        })
+        });
 
         expect(gulp.tasks).to.have.property('copy');
         expect(gulp.tasks).to.have.property('copy-task-1');
@@ -57,7 +57,7 @@ describe('index #copy', function () {
 
         cripweb(gulp)(function (crip) {
             methods = crip.copy('task-1', 'b.txt', './files-c-2/dist', './files-c-2/sub');
-        })
+        });
 
         methods.on('finish-copy-task-1', function () {
             expect('./files-c-2/dist/').to.be.a.directory().and.not.empty;
@@ -82,7 +82,7 @@ describe('index #copy', function () {
 
         cripweb(gulp)(function (crip) {
             methods = crip.copy('task-1', ['c.txt', 'd.txt'], './files-c-3/dist', './files-c-3');
-        })
+        });
         gulp.start('copy-task-1');
 
         methods.on('finish-copy-task-1', function () {
@@ -113,7 +113,7 @@ describe('index #copy', function () {
 
         cripweb(gulp, conf)(function (crip) {
             methods = crip.copy('task-1', ['e.txt', 'f.txt']);
-        })
+        });
         gulp.start('copy-task-1');
 
         methods.on('finish-copy-task-1', function () {
@@ -143,7 +143,7 @@ describe('index #copy', function () {
             });
 
             methods = crip.copy('task-1', '*.*');
-        })
+        });
 
         methods.on('finish-copy-task-1', function () {
             expect('./files-c-5/dist/').to.be.a.directory().and.not.empty;
@@ -177,7 +177,7 @@ describe('index #copy', function () {
             crip.config.set('copy', config);
 
             methods = crip.copy('task-1', '*.*');
-        })
+        });
 
         methods.on('finish-copy-task-1', function () {
             expect('./files-c-6/dist/').to.be.a.directory().and.not.empty;
@@ -210,7 +210,7 @@ describe('index #copy', function () {
             methods =
                 crip.copy('task-1', 'k.txt')
                     .copy('task-2', 'l.txt');
-        })
+        });
 
         expect(gulp.tasks).to.have.property('copy');
         expect(gulp.tasks).to.have.property('copy-task-1');

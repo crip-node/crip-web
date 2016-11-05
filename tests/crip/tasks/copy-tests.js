@@ -12,11 +12,11 @@ describe('Copy', function () {
 
     beforeEach(function () {
         sinon.stub(utils, 'appendBase');
-    })
+    });
 
     afterEach(function () {
         utils.appendBase.restore();
-    })
+    });
 
     it('costructor() should define default methods', function () {
 
@@ -25,7 +25,7 @@ describe('Copy', function () {
         expect(copy).to.have.property('fn');
         expect(copy).to.have.property('configure');
         expect(copy).to.have.property('isInDefault');
-    })
+    });
 
     describe('#fn', function () {
 
@@ -33,7 +33,7 @@ describe('Copy', function () {
             var copy = new Copy('gulp', 'config', 'cripweb', 'registerTask', utils);
 
             expect(copy.fn).to.be.a('function');
-        })
+        });
 
         it('should get config base and output path', function () {
             var config = { get: sinon.spy() };
@@ -46,7 +46,7 @@ describe('Copy', function () {
             expect(config.get).to.have.been.calledTwice;
             expect(config.get.getCall(0)).to.have.been.calledWithExactly('copy.base');
             expect(config.get.getCall(1)).to.have.been.calledWithExactly('copy.output');
-        })
+        });
 
         it('should return cripweb getPublicMethods', function () {
             var config = { get: sinon.spy() };
@@ -57,7 +57,7 @@ describe('Copy', function () {
             var result = copy.fn('taskName', 'globs');
 
             expect(result).to.be.equal(123);
-        })
+        });
 
         it('should call utils.appendBase in default order', function () {
             var config = { get: sinon.spy() };
@@ -69,7 +69,7 @@ describe('Copy', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({ base: 'prependPath', output: 'outputPath', src: 'globs' });
-        })
+        });
 
         it('should call utils.appendBase with epty base', function () {
             var config = { get: sinon.stub().returns('') };
@@ -81,7 +81,7 @@ describe('Copy', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({ base: '', output: 'outputPath', src: 'globs' });
-        })
+        });
 
         it('should call utils.appendBase with epty base and output', function () {
             var config = { get: sinon.stub().returns('') };
@@ -93,29 +93,29 @@ describe('Copy', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({ base: '', output: '', src: 'globs' });
-        })
+        });
 
         it('should throw error if globs is not presented', function () {
             var copy = new Copy('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 copy.fn('taskName');
-            }
+            };
 
             expect(delegate).to.throw(Error, 'Copy task could not be executed without globs! "globs" argument as Array | String is required.');
-        })
+        });
 
         it('should throw error if name is not string with length > 3', function () {
             var copy = new Copy('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 copy.fn({}, 'globs');
-            }
+            };
 
             expect(delegate).to.throw(Error, 'Copy task could not be executed without name! "name" argument as String with length > 3 is required.');
-        })
+        });
 
-    })
+    });
 
     it('configure() should call config set method', function () {
         var config = { set: sinon.spy() };
@@ -124,8 +124,8 @@ describe('Copy', function () {
         copy.configure();
 
         expect(config.set).to.have.been.calledOnce;
-        expect(config.set).to.have.been.calledWithExactly('copy', { base: "", isInDefaults: true, output: "{assetsDist}" });
-    })
+        expect(config.set).to.have.been.calledWithExactly('copy', { base: '', isInDefaults: true, output: '{assetsDist}' });
+    });
 
     it('isInDefault() should return value from config get method', function () {
         var config = { get: sinon.stub() };
@@ -139,4 +139,4 @@ describe('Copy', function () {
         expect(result).to.be.equal(true);
     });
 
-})
+});

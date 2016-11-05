@@ -12,11 +12,11 @@ describe('Scripts', function () {
 
     beforeEach(function () {
         sinon.stub(utils, 'appendBase');
-    })
+    });
 
     afterEach(function () {
         utils.appendBase.restore();
-    })
+    });
 
     it('costructor() should define default methods', function () {
 
@@ -25,7 +25,7 @@ describe('Scripts', function () {
         expect(scripts).to.have.property('fn');
         expect(scripts).to.have.property('configure');
         expect(scripts).to.have.property('isInDefault');
-    })
+    });
 
     it('configure() should call config set method', function () {
         var config = { set: sinon.spy() };
@@ -35,14 +35,14 @@ describe('Scripts', function () {
 
         expect(config.set).to.have.been.calledOnce;
         expect(config.set).to.have.been.calledWithExactly('scripts', {
-            base: "{assetsSrc}\\js",
+            base: '{assetsSrc}\\js',
             isInDefaults: true,
             concat: { newLine: ';\r\n' },
-            output: "{assetsDist}\\js",
+            output: '{assetsDist}\\js',
             sourcemaps: { enabled: true, location: undefined, options: {} },
             uglify: { enabled: true, options: {} }
         });
-    })
+    });
 
     it('isInDefault() should return value from config get method', function () {
         var config = { get: sinon.stub() };
@@ -62,7 +62,7 @@ describe('Scripts', function () {
             var scripts = new Scripts('gulp', 'config', 'cripweb', 'registerTask', utils);
 
             expect(scripts.fn).to.be.a('function');
-        })
+        });
 
         it('should get config base, output path, uglify and sourcemaps options', function () {
             var config = { get: sinon.spy() };
@@ -76,7 +76,7 @@ describe('Scripts', function () {
             expect(config.get.getCall(1)).to.have.been.calledWithExactly('scripts.output');
             expect(config.get.getCall(2)).to.have.been.calledWithExactly('scripts.uglify');
             expect(config.get.getCall(3)).to.have.been.calledWithExactly('scripts.sourcemaps');
-        })
+        });
 
         it('should return cripweb getPublicMethods', function () {
             var config = { get: sinon.spy() };
@@ -87,7 +87,7 @@ describe('Scripts', function () {
             var result = scripts.fn('taskName', 'globs');
 
             expect(result).to.be.equal(123);
-        })
+        });
 
         it('should call utils.appendBase in default order', function () {
             var config = { get: sinon.stub().returns('') };
@@ -99,11 +99,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "prependPath", concat: true, output: "outputPath",
-                sourcemaps: '', src: "globs", uglify: '', newLine: '',
-                outputFile: { basename: "outputFileName", extname: ".js" },
+                base: 'prependPath', concat: true, output: 'outputPath',
+                sourcemaps: '', src: 'globs', uglify: '', newLine: '',
+                outputFile: { basename: 'outputFileName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with epty base', function () {
             var config = { get: sinon.stub().returns('') };
@@ -115,11 +115,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "", concat: true, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "", newLine: '',
-                outputFile: { basename: "outputFileName", extname: ".js" },
+                base: '', concat: true, output: 'outputPath',
+                sourcemaps: '', src: 'globs', uglify: '', newLine: '',
+                outputFile: { basename: 'outputFileName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with epty base and output', function () {
             var config = { get: sinon.stub().returns('') };
@@ -131,11 +131,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "", concat: true, output: "", sourcemaps: "",
-                src: "globs", uglify: "", newLine: '',
-                outputFile: { basename: "fileName", extname: ".js" },
+                base: '', concat: true, output: '', sourcemaps: '',
+                src: 'globs', uglify: '', newLine: '',
+                outputFile: { basename: 'fileName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with concat: false if file name is as boolean false', function () {
             var conf = { get: sinon.stub().returns('') };
@@ -147,11 +147,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "prependPath", concat: false, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "", newLine: '',
-                outputFile: { basename: "taskName", extname: ".js" },
+                base: 'prependPath', concat: false, output: 'outputPath',
+                sourcemaps: '', src: 'globs', uglify: '', newLine: '',
+                outputFile: { basename: 'taskName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with concat: true if file name is as boolean true and file name from task name', function () {
             var conf = { get: sinon.stub().returns('') };
@@ -163,11 +163,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "prependPath", concat: true, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "", newLine: '',
-                outputFile: { basename: "taskName", extname: ".js" },
+                base: 'prependPath', concat: true, output: 'outputPath',
+                sourcemaps: '', src: 'globs', uglify: '', newLine: '',
+                outputFile: { basename: 'taskName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with default src if boolean is third parameter', function () {
             var conf = { get: sinon.stub().returns('def') };
@@ -179,11 +179,11 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "prependPath", concat: true, output: "def",
-                sourcemaps: "def", src: "globs", uglify: "def", newLine: 'def',
-                outputFile: { basename: "taskName", extname: ".js" },
+                base: 'prependPath', concat: true, output: 'def',
+                sourcemaps: 'def', src: 'globs', uglify: 'def', newLine: 'def',
+                outputFile: { basename: 'taskName', extname: '.js' },
             });
-        })
+        });
 
         it('should call utils.appendBase with concat false if file name is not presented', function () {
             var config = { get: sinon.stub().returns('x') };
@@ -195,32 +195,32 @@ describe('Scripts', function () {
 
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
-                base: "x", concat: false, output: "x", sourcemaps: "x",
-                src: "globs", uglify: "x", newLine: 'x',
-                outputFile: { basename: "taskName", extname: ".js" },
+                base: 'x', concat: false, output: 'x', sourcemaps: 'x',
+                src: 'globs', uglify: 'x', newLine: 'x',
+                outputFile: { basename: 'taskName', extname: '.js' },
             });
-        })
+        });
 
         it('should throw error if globs is not presented', function () {
             var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 scripts.fn('taskName');
-            }
+            };
 
             expect(delegate).to.throw(Error, 'Scripts task could not be executed without globs! "globs" argument as Array | String is required.');
-        })
+        });
 
         it('should throw error if name is not string with length > 3', function () {
             var scripts = new Scripts('gulp', 'config', 'cripweb', 'noop', utils);
 
             var delegate = function () {
                 scripts.fn({}, 'globs');
-            }
+            };
 
             expect(delegate).to.throw(Error, 'Scripts task could not be executed without name! "name" argument as String with length > 3 is required.');
-        })
+        });
 
-    })
+    });
 
-})
+});

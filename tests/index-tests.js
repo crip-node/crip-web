@@ -12,11 +12,11 @@ describe('index #copy', function () {
 
     beforeEach(function () {
         sinon.stub(cripCore, 'log');
-    })
+    });
 
     afterEach(function () {
         cripCore.log.restore();
-    })
+    });
 
     describe('#default', function () {
         it('should execute all defined tasks fom defaults', function (done) {
@@ -34,7 +34,7 @@ describe('index #copy', function () {
             gulp.task('my-custom-name', function () {
                 fs.mkdirSync('./files/dist');
                 fs.writeFileSync('./files/dist/x.txt', 'x.txt');
-            })
+            });
 
             cripweb(gulp)(function (crip) {
                 crip.config.set({
@@ -49,7 +49,7 @@ describe('index #copy', function () {
                         .copy('task-2', 'n.txt')
                         .watch('task-1', '*.*', ['copy-task-1'])
                         .scripts('task-1', '*.js', true);
-            })
+            });
 
             expect(gulp.tasks).to.have.property('copy');
             expect(gulp.tasks).to.have.property('copy-task-1');
@@ -72,6 +72,6 @@ describe('index #copy', function () {
             });
 
             gulp.start('default');
-        })
-    })
+        });
+    });
 });
