@@ -4,6 +4,7 @@
   "description": "Crip fluent API for Gulp\n For more deitails [see on GitHub](https://github.com/crip-node/crip-web)",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint tests/**/*.js & eslint crip/**/*.js",
     "test": "mocha ./tests/**/*-tests.js"
   },
   "repository": {
