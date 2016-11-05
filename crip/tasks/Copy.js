@@ -46,7 +46,7 @@ function Copy(gulp, config, cripweb, registerTask, utils) {
         registerTask.apply(cripweb, ['copy', taskName, gulpAction, options.src/*, TODO: include or exclude task from default */]);
 
         return cripweb.getPublicMethods();
-    }
+    };
 }
 
 /**
@@ -58,7 +58,7 @@ Copy.prototype.configure = function () {
         output: '{assetsDist}',
         isInDefaults: true
     });
-}
+};
 
 /**
  * Determines are this method tasks included in gulp default task.
@@ -67,7 +67,7 @@ Copy.prototype.configure = function () {
  */
 Copy.prototype.isInDefault = function () {
     return this.config.get('copy.isInDefaults');
-}
+};
 
 
 module.exports = Copy;

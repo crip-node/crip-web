@@ -1,4 +1,3 @@
-var colors = require('colors');
 var path = require('path');
 var crip = require('crip-core');
 
@@ -36,11 +35,11 @@ var utils = {
             // treat as array or object
             crip.forEach(options.src, function (dir, key) {
                 options.src[key] = path.join(options.base, dir).replace(trimRegex, '');
-            })
+            });
         } else
             //treat as a string
             options.src = path.join(options.base, options.src).replace(trimRegex, '');
     }
-}
+};
 
 module.exports = utils;

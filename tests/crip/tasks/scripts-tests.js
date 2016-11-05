@@ -37,6 +37,7 @@ describe('Scripts', function () {
         expect(config.set).to.have.been.calledWithExactly('scripts', {
             base: "{assetsSrc}\\js",
             isInDefaults: true,
+            concat: { newLine: ';\r\n' },
             output: "{assetsDist}\\js",
             sourcemaps: { enabled: true, location: undefined, options: {} },
             uglify: { enabled: true, options: {} }
@@ -99,7 +100,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "prependPath", concat: true, output: "outputPath",
-                sourcemaps: '', src: "globs", uglify: '',
+                sourcemaps: '', src: "globs", uglify: '', newLine: '',
                 outputFile: { basename: "outputFileName", extname: ".js" },
             });
         })
@@ -115,7 +116,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "", concat: true, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "",
+                sourcemaps: "", src: "globs", uglify: "", newLine: '',
                 outputFile: { basename: "outputFileName", extname: ".js" },
             });
         })
@@ -131,7 +132,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "", concat: true, output: "", sourcemaps: "",
-                src: "globs", uglify: "",
+                src: "globs", uglify: "", newLine: '',
                 outputFile: { basename: "fileName", extname: ".js" },
             });
         })
@@ -147,7 +148,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "prependPath", concat: false, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "",
+                sourcemaps: "", src: "globs", uglify: "", newLine: '',
                 outputFile: { basename: "taskName", extname: ".js" },
             });
         })
@@ -163,7 +164,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "prependPath", concat: true, output: "outputPath",
-                sourcemaps: "", src: "globs", uglify: "",
+                sourcemaps: "", src: "globs", uglify: "", newLine: '',
                 outputFile: { basename: "taskName", extname: ".js" },
             });
         })
@@ -179,7 +180,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "prependPath", concat: true, output: "def",
-                sourcemaps: "def", src: "globs", uglify: "def",
+                sourcemaps: "def", src: "globs", uglify: "def", newLine: 'def',
                 outputFile: { basename: "taskName", extname: ".js" },
             });
         })
@@ -195,7 +196,7 @@ describe('Scripts', function () {
             expect(utils.appendBase).to.have.been.calledOnce;
             expect(utils.appendBase).to.have.been.calledWithExactly({
                 base: "x", concat: false, output: "x", sourcemaps: "x",
-                src: "globs", uglify: "x",
+                src: "globs", uglify: "x", newLine: 'x',
                 outputFile: { basename: "taskName", extname: ".js" },
             });
         })

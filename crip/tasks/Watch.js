@@ -27,7 +27,7 @@ function Watch(gulp, config, cripweb, registerTask, utils) {
         var options = {
             src: globs,
             base: config.get('watch.base')
-        }
+        };
 
         if (prependPath || prependPath === '')
             options.base = prependPath;
@@ -45,7 +45,7 @@ function Watch(gulp, config, cripweb, registerTask, utils) {
         registerTask.apply(cripweb, ['watch', taskName, gulpAction, options.src, undefined, deps]);
 
         return cripweb.getPublicMethods();
-    }
+    };
 }
 
 /**
@@ -56,7 +56,7 @@ Watch.prototype.configure = function () {
         base: '',
         isInDefaults: false
     });
-}
+};
 
 /**
  * Determines are this method tasks included in gulp default task.
@@ -65,7 +65,7 @@ Watch.prototype.configure = function () {
  */
 Watch.prototype.isInDefault = function () {
     return this.config.get('watch.isInDefaults');
-}
+};
 
 
 module.exports = Watch;

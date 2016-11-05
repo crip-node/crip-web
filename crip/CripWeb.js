@@ -1,4 +1,3 @@
-var utils = require('./utils');
 var crip = require('crip-core');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
@@ -48,7 +47,7 @@ function CripWeb(gulp, config) {
  */
 CripWeb.prototype.getPublicMethods = function () {
     return this._methods;
-}
+};
 
 /**
  * Emits correct name of task compliteion
@@ -61,7 +60,7 @@ CripWeb.prototype.emitComplete = function (taskId) {
     this._methods.emit(name);
 
     return name;
-}
+};
 
 /**
  * Define task for method
@@ -87,7 +86,7 @@ CripWeb.prototype.addTask = function (method, name, gulpFn, globs, isDefault, de
     var includeInDefault = this.resolveDefault(method, isDefault);
     var task = new this._Task(method, name, gulpFn, globs, includeInDefault, deps);
     this._tasks[method][name] = task;
-}
+};
 
 /**
  * Determines is task in defaults by configuration or definition 
@@ -100,7 +99,7 @@ CripWeb.prototype.resolveDefault = function (method, isDefault) {
     var methodIsDefault = this._methods[method].isInDefault();
 
     return crip.isDefined(isDefault) ? isDefault : methodIsDefault;
-}
+};
 
 /**
  * Register all defined tasks in gulp object
@@ -111,8 +110,8 @@ CripWeb.prototype.defineRegisteredTasksInGulp = function () {
     crip.forEach(self._tasks, function (sectionValues, sectionKey) {
         self.defineSection(sectionKey);
         self.defineTasksInGulp(sectionValues);
-    })
-}
+    });
+};
 
 /**
  * Define gulp section task to complete all task in it
@@ -130,8 +129,9 @@ CripWeb.prototype.defineSection = function (name) {
 
     this._gulp.task(name, beforeDeps, function (done) {
         self.emitComplete(name);
+        done();
     });
-}
+};
 
 /**
  * Regiter Tasks instances in gulp
@@ -145,7 +145,7 @@ CripWeb.prototype.defineTasksInGulp = function (tasks) {
     crip.forEach(tasks, function (task) {
         self.definetaskInGulp(task);
     });
-}
+};
 
 /**
  * Define single task instance in gulp
@@ -174,7 +174,7 @@ CripWeb.prototype.definetaskInGulp = function (task) {
                 cb();
         });
     });
-}
+};
 
 /**
  * Search tasks by section and/or name
@@ -192,7 +192,7 @@ CripWeb.prototype.findTasks = function (section, name) {
     result[key] = this._tasks[section][name];
 
     return result;
-}
+};
 
 /**
  * Define crip default tasks in gulp
@@ -215,12 +215,13 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
             // task DEPS always is an array, fo we safely can loop if it is defined
             crip.forEach(task.deps, function (dep) {
                 watchTasks.push(dep);
-            })
+            });
         }
     });
 
     this._gulp.task('default', self._beforeDefault, function (done) {
-        return self.emitComplete('default');
+        self.emitComplete('default');
+        done();
     });
 
     this._gulp.task('watch-glob', watchTasks, function () {
@@ -234,9 +235,9 @@ CripWeb.prototype.defineDefaultTasksInGulp = function () {
                         return task.run(self._activeTasks);
                     }));
             }
-        })
+        });
     });
-}
+};
 
 /**
  * Loop all defined tasks in crip
@@ -250,6 +251,6 @@ CripWeb.prototype._loopTasks = function (cb) {
             cb(task, name, sectionName);
         });
     });
-}
+};
 
 module.exports = CripWeb;

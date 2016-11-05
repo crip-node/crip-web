@@ -28,6 +28,7 @@ function Scripts(gulp, config, cripweb, registerTask, utils) {
             output: config.get('scripts.output'),
             uglify: config.get('scripts.uglify'),
             sourcemaps: config.get('scripts.sourcemaps'),
+            newLine: config.get('scripts.concat.newLine'),
             concat: !(crip.isUndefined(outputFileName) && crip.isUndefined(prependPath) && crip.isUndefined(outputPath)),
             outputFile: { basename: fileName, extname: '.js' }
         };
@@ -65,17 +66,17 @@ function Scripts(gulp, config, cripweb, registerTask, utils) {
 
             var result = gulp.src(options.src)
                 .pipe(If(enableSourcemapsConcat, sourcemaps.init()))
-                .pipe(If(options.concat, concat('processing-name.js')))
+                .pipe(If(options.concat, concat('processing-name.js', { newLine: options.newLine })))
                 .pipe(If(options.concat, rename(options.outputFile)))
                 .pipe(If(enableSourcemapsConcat, sourcemaps.write(options.sourcemaps.location, options.sourcemaps.options)))
                 .pipe(gulp.dest(options.output))
-                .pipe(If(enableUglifyNoConcat, flatmap(function (stream, file) {
+                .pipe(If(enableUglifyNoConcat, flatmap(function (stream) {
                     return stream.pipe(uglify(options.uglify.options).on('error', onError))
                         .pipe(rename({ suffix: '.min' }));
                 })))
                 .pipe(If(enableUglifyNoConcat, gulp.dest(options.output)))
                 .pipe(
-                    If(enableUglifyAndConcat, 
+                If(enableUglifyAndConcat,
                     uglify(options.uglify.options).on('error', onError))
                 )
                 .pipe(If(enableUglifyAndConcat, rename({ suffix: '.min' })))
@@ -84,14 +85,14 @@ function Scripts(gulp, config, cripweb, registerTask, utils) {
             return result;
         }
 
-        function onError (err) {
-            console.log(err);
+        function onError(err) {
+            crip.log(err);
         }
 
         registerTask.apply(cripweb, ['scripts', taskName, gulpAction, options.src]);
 
         return cripweb.getPublicMethods();
-    }
+    };
 }
 
 /**
@@ -101,6 +102,9 @@ Scripts.prototype.configure = function () {
     this.config.set('scripts', {
         base: '{assetsSrc}\\js',
         output: '{assetsDist}\\js',
+        concat: {
+            newLine: ';\r\n'
+        },
         uglify: {
             enabled: true,
             options: {}
@@ -112,7 +116,7 @@ Scripts.prototype.configure = function () {
         },
         isInDefaults: true
     });
-}
+};
 
 /**
  * Determines are this method tasks included in gulp default task.
@@ -121,6 +125,6 @@ Scripts.prototype.configure = function () {
  */
 Scripts.prototype.isInDefault = function () {
     return this.config.get('scripts.isInDefaults');
-}
+};
 
 module.exports = Scripts;

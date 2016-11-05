@@ -36,8 +36,8 @@ function CripMethods(gulp, config, task, cripweb) {
                 return taskDefinition.isInDefault(self.config);
 
             return true;
-        }
-    }
+        };
+    };
 
     /**
      * Public method to include gulp tasks
@@ -49,7 +49,7 @@ function CripMethods(gulp, config, task, cripweb) {
         cripweb._beforeDefault.push(taskName);
 
         return this;
-    }
+    };
 }
 
 /**

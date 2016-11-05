@@ -1,4 +1,3 @@
-var path = require('path');
 var fs = require('fs');
 var extend = require('extend');
 
@@ -49,7 +48,7 @@ Config.prototype.set = function (pathToSet, options) {
     }
 
     extend(true, target, options);
-}
+};
 
 /**
  * Get path from configuration
@@ -84,7 +83,7 @@ Config.prototype.get = function (pathToConfig, skipLast) {
     }
 
     return temp;
-}
+};
 
 /**
  * Read json file;
@@ -97,7 +96,7 @@ Config.prototype._readFromFile = function (pathToFile) {
         return JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
 
     return pathToFile;
-}
+};
 
 
 module.exports = Config;

@@ -45,7 +45,7 @@ Task.prototype.__proto__ = events.EventEmitter.prototype;
  */
 Task.prototype.isInDefaults = function () {
     return !!this._includeInDefault;
-}
+};
 
 /**
  * Execite task deffinition
@@ -63,7 +63,8 @@ Task.prototype.run = function (taskStack) {
     if (taskStack[id] == 0) {
         taskStack[id]++;
 
-        crip.log('Starting CRIP', ("'" + id + "'"), '...');
+        var idStr = '\'' + id + '\'';
+        crip.log('Starting CRIP', idStr, '...');
         var currTime = new Date();
         return this._fn()
             .on('finish', function () {
@@ -75,11 +76,11 @@ Task.prototype.run = function (taskStack) {
                     timeMetric = 's';
                 }
 
-                crip.log('Finished CRIP', ("'" + id + "'"), 'after', time, timeMetric);
+                crip.log('Finished CRIP', idStr, 'after', time, timeMetric);
                 taskStack[id]--;
                 self.emit('finish', id);
-            })
+            });
     }
-}
+};
 
 module.exports = Task;
