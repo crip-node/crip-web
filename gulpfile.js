@@ -12,7 +12,7 @@ gulp.task('test-2', function (done) {
 });
 
 cripweb(gulp)(function (crip) {
-    crip.addDefault(['task-1', 'task-2']);
+    crip.addDefault(['test-1', 'test-2']);
     crip.copy('task-1', 'a.txt', 'tests/files/dist', 'tests/index-files')
         .copy('task-2', 'b.txt', 'tests/files/dist', 'tests/index-files');
 
